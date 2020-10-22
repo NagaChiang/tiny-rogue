@@ -17,7 +17,8 @@
         "Unity.2D.Entities.SpriteRenderer.Tiny",
         "Unity.2D.Entities.Physics",
         "Unity.Tiny.Image2D",
-        "Unity.Entities.Runtime"
+        "Unity.Entities.Runtime",
+        "Timespawn.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
