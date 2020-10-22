@@ -1,10 +1,9 @@
 ﻿using Timespawn.Core.DOTS;
 using Timespawn.TinyRogue.Assets;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Timespawn.TinyRogue.Map
+namespace Timespawn.TinyRogue.Maps
 {
     public class MapGenerationSystem : SystemBase
     {
@@ -22,12 +21,15 @@ namespace Timespawn.TinyRogue.Map
                 {
                     for (ushort x = 0; x < command.Width; x++)
                     {
-                        float3 cellPos = map.GetCellCenter(translation.Value, x, y);
-                        Entity terrainEntity = parallelWriter.Instantiate(entityInQueryIndex, assetLoader.Terrain);
-                        parallelWriter.AddComponent(entityInQueryIndex, terrainEntity, new Tile(x, y));
-                        parallelWriter.SetComponent(entityInQueryIndex, terrainEntity, new Translation {Value = cellPos});
+                        Entity terrainEntity = MapUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Terrain, map, translation.Value, x, y);
 
-                        Cell cell = new Cell(terrainEntity, Entity.Null);
+                        Entity actorEntity = Entity.Null;
+                        if (x == 2 && y == 2)
+                        {
+                            actorEntity = MapUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Player, map, translation.Value, x, y);
+                        }
+
+                        Cell cell = new Cell(terrainEntity, actorEntity);
                         cellBuffer.Add(cell);
                     }
                 }

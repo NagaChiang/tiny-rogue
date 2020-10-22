@@ -6,5 +6,6 @@ namespace Timespawn.TinyRogue.Assets
     public struct AssetLoader : IComponentData
     {
         public Entity Terrain;
+        public Entity Player;
     }
 }

@@ -2,7 +2,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace Timespawn.TinyRogue.Map
+namespace Timespawn.TinyRogue.Maps
 {
     public struct Map : IComponentData
     {

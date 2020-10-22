@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-namespace Timespawn.TinyRogue.Map
+namespace Timespawn.TinyRogue.Maps
 {
     public struct Cell : IBufferElementData
     {
