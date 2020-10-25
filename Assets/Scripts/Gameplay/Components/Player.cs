@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-namespace Timespawn.TinyRogue.Actors
+namespace Timespawn.TinyRogue.Gameplay
 {
     [GenerateAuthoringComponent]
     public struct Player : IComponentData

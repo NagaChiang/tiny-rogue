@@ -4,11 +4,11 @@ namespace Timespawn.TinyRogue.Assets
 {
     public class AssetSystem : SystemBase
     {
-        private static Entity AssetLoaderEntity;
+        private Entity AssetLoaderEntity;
 
-        public static AssetLoader GetAssetLoader(EntityManager entityManager)
+        public AssetLoader GetAssetLoader()
         {
-            return entityManager.GetComponentData<AssetLoader>(AssetLoaderEntity);
+            return EntityManager.GetComponentData<AssetLoader>(AssetLoaderEntity);
         }
 
         protected override void OnStartRunning()

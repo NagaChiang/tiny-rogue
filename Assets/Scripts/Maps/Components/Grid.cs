@@ -17,6 +17,26 @@ namespace Timespawn.TinyRogue.Maps
             Height = command.Height;
         }
 
+        public bool HasActor(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        {
+            return HasActor(cellBuffer, coord.x, coord.y);
+        }
+
+        public bool HasActor(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return false;
+            }
+
+            return cellBuffer[GetIndex(x, y)].Actor != Entity.Null;
+        }
+
+        public int GetIndex(int x, int y)
+        {
+            return x + (y * Width);
+        }
+
         public float3 GetCellCenter(float3 gridPosition, int2 coord)
         {
             return GetCellCenter(gridPosition, coord.x, coord.y);

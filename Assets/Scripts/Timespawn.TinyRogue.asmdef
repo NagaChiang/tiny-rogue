@@ -18,7 +18,8 @@
         "Unity.2D.Entities.Physics",
         "Unity.Tiny.Image2D",
         "Unity.Entities.Runtime",
-        "Timespawn.Core"
+        "Timespawn.Core",
+        "Timespawn.EntityTween"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -4,13 +4,13 @@ namespace Timespawn.TinyRogue.Maps
 {
     public struct Cell : IBufferElementData
     {
-        public Entity TerrainEntity;
-        public Entity ActorEntity;
+        public Entity Terrain;
+        public Entity Actor;
 
-        public Cell(Entity terrainEntity, Entity actorEntity)
+        public Cell(Entity terrain, Entity actor)
         {
-            TerrainEntity = terrainEntity;
-            ActorEntity = actorEntity;
+            Terrain = terrain;
+            Actor = actor;
         }
     }
 }

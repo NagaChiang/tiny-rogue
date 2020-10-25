@@ -5,17 +5,38 @@ using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
 {
-    public class MapGenerationSystem : SystemBase
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    public class MapSystem : SystemBase
     {
+        private Entity MapEntity;
+        private EntityQuery MapQuery;
+
+        public Entity GetMapEntity()
+        {
+            if (MapEntity == Entity.Null)
+            {
+                MapEntity = MapQuery.GetSingletonEntity();
+            }
+
+            return MapEntity;
+        }
+
+        protected override void OnCreate()
+        {
+            MapQuery = GetEntityQuery(ComponentType.ReadOnly<Map>());
+        }
+
         protected override void OnUpdate()
         {
-            AssetLoader assetLoader = AssetSystem.GetAssetLoader(EntityManager);
-
-            EntityCommandBuffer.ParallelWriter parallelWriter = DotsUtils.CreateParallelWriter<EndSimulationEntityCommandBufferSystem>();
+            AssetLoader assetLoader = World.GetOrCreateSystem<AssetSystem>().GetAssetLoader();
+            EntityCommandBuffer.ParallelWriter parallelWriter = DotsUtils.CreateParallelWriter<EndInitializationEntityCommandBufferSystem>();
             Entities.ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in MapGenerationCommand command) =>
             {
+                parallelWriter.AddComponent(entityInQueryIndex, entity, new Map());
+
                 Grid grid = new Grid(command);
                 parallelWriter.AddComponent(entityInQueryIndex, entity, grid);
+
                 DynamicBuffer<Cell> cellBuffer = parallelWriter.AddBuffer<Cell>(entityInQueryIndex, entity);
                 for (ushort y = 0; y < command.Height; y++)
                 {
@@ -37,7 +58,7 @@ namespace Timespawn.TinyRogue.Maps
                 parallelWriter.RemoveComponent<MapGenerationCommand>(entityInQueryIndex, entity);
             }).ScheduleParallel();
 
-            DotsUtils.GetSystemFromDefaultWorld<EndSimulationEntityCommandBufferSystem>().AddJobHandleForProducer(Dependency);
+            DotsUtils.GetSystemFromDefaultWorld<EndInitializationEntityCommandBufferSystem>().AddJobHandleForProducer(Dependency);
         }
     }
 }

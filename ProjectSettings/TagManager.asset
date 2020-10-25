@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Terrain
+    uniqueID: 4250770875
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Actor
+    uniqueID: 2570645937
     locked: 0
