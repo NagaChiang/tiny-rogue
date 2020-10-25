@@ -4,18 +4,18 @@ using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
 {
-    public static class MapUtils
+    public static class GridUtils
     {
         public static Entity Instantiate(
             EntityCommandBuffer.ParallelWriter parallelWriter,
             int entityInQueryIndex,
             Entity prefab,
-            Map map,
+            Grid grid,
             float3 mapPos,
             ushort x,
             ushort y)
         {
-            float3 cellPos = map.GetCellCenter(mapPos, x, y);
+            float3 cellPos = grid.GetCellCenter(mapPos, x, y);
             Entity entity = parallelWriter.Instantiate(entityInQueryIndex, prefab);
             parallelWriter.AddComponent(entityInQueryIndex, entity, new Tile(x, y));
             parallelWriter.SetComponent(entityInQueryIndex, entity, new Translation {Value = cellPos});

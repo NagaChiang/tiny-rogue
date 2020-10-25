@@ -4,32 +4,32 @@ using Unity.Mathematics;
 
 namespace Timespawn.TinyRogue.Maps
 {
-    public struct Map : IComponentData
+    public struct Grid : IComponentData
     {
         private static readonly float2 CellSize = new float2(1.0f);
 
         public ushort Width;
         public ushort Height;
 
-        public Map(MapGenerationCommand command)
+        public Grid(MapGenerationCommand command)
         {
             Width = command.Width;
             Height = command.Height;
         }
 
-        public float3 GetCellCenter(float3 mapPosition, int2 coord)
+        public float3 GetCellCenter(float3 gridPosition, int2 coord)
         {
-            return GetCellCenter(mapPosition, coord.x, coord.y);
+            return GetCellCenter(gridPosition, coord.x, coord.y);
         }
 
-        public float3 GetCellCenter(float3 mapPosition, int x, int y)
+        public float3 GetCellCenter(float3 gridPosition, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
                 return default;
             }
 
-            return mapPosition - GetLocalCenter().ToFloat3() + GetLocalCellCenter(x, y).ToFloat3();
+            return gridPosition - GetLocalCenter().ToFloat3() + GetLocalCellCenter(x, y).ToFloat3();
         }
 
         public float2 GetLocalCellCenter(int x, int y)
