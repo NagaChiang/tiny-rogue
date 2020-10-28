@@ -17,19 +17,45 @@ namespace Timespawn.TinyRogue.Maps
             Height = command.Height;
         }
 
+        public Entity GetActor(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        {
+            return GetActor(cellBuffer, coord.x, coord.y);
+        }
+
+        public Entity GetActor(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return Entity.Null;
+            }
+
+            return cellBuffer[GetIndex(x, y)].Actor;
+        }
+
+        public void SetActor(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity actor)
+        {
+            SetActor(cellBuffer, coord.x, coord.y, actor);
+        }
+
+        public void SetActor(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity actor)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return;
+            }
+
+            Cell cell = cellBuffer[GetIndex(x, y)];
+            cellBuffer[GetIndex(x, y)] = new Cell(cell.Terrain, actor);
+        }
+
         public bool HasActor(DynamicBuffer<Cell> cellBuffer, int2 coord)
         {
-            return HasActor(cellBuffer, coord.x, coord.y);
+            return GetActor(cellBuffer, coord.x, coord.y) != Entity.Null;
         }
 
         public bool HasActor(DynamicBuffer<Cell> cellBuffer, int x, int y)
         {
-            if (!IsValidCoord(x, y))
-            {
-                return false;
-            }
-
-            return cellBuffer[GetIndex(x, y)].Actor != Entity.Null;
+            return GetActor(cellBuffer, x, y) != Entity.Null;
         }
 
         public int GetIndex(int x, int y)

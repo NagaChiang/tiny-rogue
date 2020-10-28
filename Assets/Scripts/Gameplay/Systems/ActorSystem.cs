@@ -9,7 +9,7 @@ namespace Timespawn.TinyRogue.Gameplay
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     [UpdateAfter(typeof(PlayerInputSystem))]
-    public class ActorCommandSystem : SystemBase
+    public class ActorSystem : SystemBase
     {
         protected override void OnUpdate()
         {
@@ -20,13 +20,25 @@ namespace Timespawn.TinyRogue.Gameplay
             EntityCommandBuffer commandBuffer = DotsUtils.CreateCommandBuffer<EndInitializationEntityCommandBufferSystem>();
             Entities.ForEach((Entity entity, in ActorCommand command, in Tile tile) =>
             {
+                commandBuffer.RemoveComponent<ActorCommand>(entity);
+
                 int2 targetCoord = tile.GetCoord() + CommonUtils.DirectionToInt2(command.Direction);
-                if (!grid.HasActor(cellBuffer, targetCoord))
+                if (!grid.IsValidCoord(targetCoord))
                 {
-                    commandBuffer.AddComponent(entity, new GridMovementCommand(targetCoord));
+                    return;
                 }
 
-                commandBuffer.RemoveComponent<ActorCommand>(entity);
+                Entity target = grid.GetActor(cellBuffer, targetCoord);
+                if (target != Entity.Null)
+                {
+                    // Attack
+                    commandBuffer.AddComponent(entity, new AttackCommand(target));
+                }
+                else
+                {
+                    // Move
+                    commandBuffer.AddComponent(entity, new GridMovementCommand(targetCoord));
+                }
             }).Run();
         }
     }

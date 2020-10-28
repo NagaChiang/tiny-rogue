@@ -7,5 +7,6 @@ namespace Timespawn.TinyRogue.Assets
     {
         public Entity Terrain;
         public Entity Player;
+        public Entity Mob;
     }
 }

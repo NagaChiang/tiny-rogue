@@ -49,6 +49,10 @@ namespace Timespawn.TinyRogue.Maps
                         {
                             actorEntity = GridUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Player, grid, translation.Value, x, y);
                         }
+                        else if (x == 3 && y == 3)
+                        {
+                            actorEntity = GridUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Mob, grid, translation.Value, x, y);
+                        }
 
                         Cell cell = new Cell(terrainEntity, actorEntity);
                         cellBuffer.Add(cell);
