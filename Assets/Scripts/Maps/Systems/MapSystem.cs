@@ -1,5 +1,4 @@
-﻿using Timespawn.Core.DOTS;
-using Timespawn.TinyRogue.Assets;
+﻿using Timespawn.TinyRogue.Assets;
 using Unity.Entities;
 using Unity.Transforms;
 
@@ -29,7 +28,9 @@ namespace Timespawn.TinyRogue.Maps
         protected override void OnUpdate()
         {
             AssetLoader assetLoader = World.GetOrCreateSystem<AssetSystem>().GetAssetLoader();
-            EntityCommandBuffer.ParallelWriter parallelWriter = DotsUtils.CreateParallelWriter<EndInitializationEntityCommandBufferSystem>();
+
+            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer.ParallelWriter parallelWriter = endInitECBSystem.CreateCommandBuffer().AsParallelWriter();
             Entities.ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in MapGenerationCommand command) =>
             {
                 parallelWriter.AddComponent(entityInQueryIndex, entity, new Map());
@@ -62,7 +63,7 @@ namespace Timespawn.TinyRogue.Maps
                 parallelWriter.RemoveComponent<MapGenerationCommand>(entityInQueryIndex, entity);
             }).ScheduleParallel();
 
-            DotsUtils.GetSystemFromDefaultWorld<EndInitializationEntityCommandBufferSystem>().AddJobHandleForProducer(Dependency);
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

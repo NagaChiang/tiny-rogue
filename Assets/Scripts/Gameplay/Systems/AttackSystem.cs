@@ -1,5 +1,4 @@
-﻿using Timespawn.Core.DOTS;
-using Timespawn.Core.Extensions;
+﻿using Timespawn.Core.Extensions;
 using Timespawn.EntityTween.Math;
 using Timespawn.EntityTween.Tweens;
 using Timespawn.TinyRogue.Maps;
@@ -14,7 +13,7 @@ namespace Timespawn.TinyRogue.Gameplay
         protected override void OnUpdate()
         {
             EntityManager entityManager = EntityManager;
-            EntityCommandBuffer commandBuffer = DotsUtils.CreateCommandBuffer<EndSimulationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
             Entities.ForEach((Entity entity, in AttackCommand command, in Attack attack, in Tile tile, in Translation translation) =>
             {
                 commandBuffer.RemoveComponent<AttackCommand>(entity);

@@ -1,5 +1,4 @@
 ﻿using Timespawn.Core.Common;
-using Timespawn.Core.DOTS;
 using Timespawn.TinyRogue.Input;
 using Timespawn.TinyRogue.Maps;
 using Unity.Entities;
@@ -9,7 +8,7 @@ namespace Timespawn.TinyRogue.Gameplay
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     [UpdateAfter(typeof(PlayerInputSystem))]
-    public class ActorSystem : SystemBase
+    public class ActorActionSystem : SystemBase
     {
         protected override void OnUpdate()
         {
@@ -17,7 +16,7 @@ namespace Timespawn.TinyRogue.Gameplay
             Grid grid = EntityManager.GetComponentData<Grid>(mapEntity);
             DynamicBuffer<Cell> cellBuffer = EntityManager.GetBuffer<Cell>(mapEntity);
 
-            EntityCommandBuffer commandBuffer = DotsUtils.CreateCommandBuffer<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>().CreateCommandBuffer();
             Entities.ForEach((Entity entity, in ActorCommand command, in Tile tile) =>
             {
                 commandBuffer.RemoveComponent<ActorCommand>(entity);

@@ -1,5 +1,4 @@
-﻿using Timespawn.Core.DOTS;
-using Timespawn.EntityTween.Math;
+﻿using Timespawn.EntityTween.Math;
 using Timespawn.EntityTween.Tweens;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -16,7 +15,7 @@ namespace Timespawn.TinyRogue.Maps
             Grid grid = EntityManager.GetComponentData<Grid>(mapEntity);
             DynamicBuffer<Cell> cellBuffer = EntityManager.GetBuffer<Cell>(mapEntity);
 
-            EntityCommandBuffer commandBuffer = DotsUtils.CreateCommandBuffer<EndSimulationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
             Entities.ForEach((Entity entity, ref Tile tile, in Translation translation, in GridMovementCommand command) =>
             {
                 commandBuffer.RemoveComponent<GridMovementCommand>(entity);
