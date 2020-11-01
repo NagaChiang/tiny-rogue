@@ -23,7 +23,7 @@ namespace Timespawn.TinyRogue.Gameplay
                     }
 
                     commandBuffer.DestroyEntity(entity);
-                    grid.SetActor(cellBuffer, tile.GetCoord(), Entity.Null);
+                    grid.SetUnit(cellBuffer, tile.GetCoord(), Entity.Null);
                 }).Run();
         }
     }

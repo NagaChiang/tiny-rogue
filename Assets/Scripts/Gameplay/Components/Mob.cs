@@ -3,8 +3,8 @@
 namespace Timespawn.TinyRogue.Gameplay
 {
     [GenerateAuthoringComponent]
-    public struct Actor : IComponentData
+    public struct Mob : IComponentData
     {
-        public ushort NextActionTime; // 100 = 1 sec
+
     }
 }

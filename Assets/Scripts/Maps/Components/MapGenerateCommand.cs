@@ -3,7 +3,7 @@
 namespace Timespawn.TinyRogue.Maps
 {
     [GenerateAuthoringComponent]
-    public struct MapGenerationCommand : IComponentData
+    public struct MapGenerateCommand : IComponentData
     {
         public ushort Width;
         public ushort Height;

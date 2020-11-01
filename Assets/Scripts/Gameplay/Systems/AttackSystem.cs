@@ -14,7 +14,7 @@ namespace Timespawn.TinyRogue.Gameplay
         {
             EntityManager entityManager = EntityManager;
             EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
-            Entities.ForEach((Entity entity, in AttackCommand command, in Attack attack, in Tile tile, in Translation translation) =>
+            Entities.ForEach((Entity entity, ref Actor actor, in AttackCommand command, in Attack attack, in Tile tile, in Translation translation) =>
             {
                 commandBuffer.RemoveComponent<AttackCommand>(entity);
 
@@ -23,6 +23,8 @@ namespace Timespawn.TinyRogue.Gameplay
                 {
                     return;
                 }
+
+                actor.NextActionTime += 20; // TODO: Data
 
                 Health targetHealth = entityManager.GetComponentData<Health>(target);
                 int newHealth = targetHealth.Current - attack.Value;

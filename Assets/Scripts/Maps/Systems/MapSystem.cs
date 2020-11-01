@@ -31,7 +31,7 @@ namespace Timespawn.TinyRogue.Maps
 
             EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
             EntityCommandBuffer.ParallelWriter parallelWriter = endInitECBSystem.CreateCommandBuffer().AsParallelWriter();
-            Entities.ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in MapGenerationCommand command) =>
+            Entities.ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in MapGenerateCommand command) =>
             {
                 parallelWriter.AddComponent(entityInQueryIndex, entity, new Map());
 
@@ -43,24 +43,24 @@ namespace Timespawn.TinyRogue.Maps
                 {
                     for (ushort x = 0; x < command.Width; x++)
                     {
-                        Entity terrainEntity = GridUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Terrain, grid, translation.Value, x, y);
+                        Entity groundEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Terrain, translation.Value, x, y);
 
                         Entity actorEntity = Entity.Null;
                         if (x == 2 && y == 2)
                         {
-                            actorEntity = GridUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Player, grid, translation.Value, x, y);
+                            actorEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Player, translation.Value, x, y);
                         }
                         else if (x == 3 && y == 3)
                         {
-                            actorEntity = GridUtils.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Mob, grid, translation.Value, x, y);
+                            actorEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Mob, translation.Value, x, y);
                         }
 
-                        Cell cell = new Cell(terrainEntity, actorEntity);
+                        Cell cell = new Cell(groundEntity, actorEntity);
                         cellBuffer.Add(cell);
                     }
                 }
 
-                parallelWriter.RemoveComponent<MapGenerationCommand>(entityInQueryIndex, entity);
+                parallelWriter.RemoveComponent<MapGenerateCommand>(entityInQueryIndex, entity);
             }).ScheduleParallel();
 
             endInitECBSystem.AddJobHandleForProducer(Dependency);

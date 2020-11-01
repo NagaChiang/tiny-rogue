@@ -1,6 +1,7 @@
 ﻿using Timespawn.Core.Extensions;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
 {
@@ -11,33 +12,49 @@ namespace Timespawn.TinyRogue.Maps
         public ushort Width;
         public ushort Height;
 
-        public Grid(MapGenerationCommand command)
+        public Grid(MapGenerateCommand command)
         {
             Width = command.Width;
             Height = command.Height;
         }
 
-        public Entity GetActor(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        public Entity Instantiate(
+            EntityCommandBuffer.ParallelWriter parallelWriter,
+            int entityInQueryIndex,
+            Entity prefab,
+            float3 mapPos,
+            ushort x,
+            ushort y)
         {
-            return GetActor(cellBuffer, coord.x, coord.y);
+            float3 cellPos = GetCellCenter(mapPos, x, y);
+            Entity entity = parallelWriter.Instantiate(entityInQueryIndex, prefab);
+            parallelWriter.AddComponent(entityInQueryIndex, entity, new Tile(x, y));
+            parallelWriter.SetComponent(entityInQueryIndex, entity, new Translation {Value = cellPos});
+
+            return entity;
         }
 
-        public Entity GetActor(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public Entity GetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        {
+            return GetUnit(cellBuffer, coord.x, coord.y);
+        }
+
+        public Entity GetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
                 return Entity.Null;
             }
 
-            return cellBuffer[GetIndex(x, y)].Actor;
+            return cellBuffer[GetIndex(x, y)].Unit;
         }
 
-        public void SetActor(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity actor)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity actor)
         {
-            SetActor(cellBuffer, coord.x, coord.y, actor);
+            SetUnit(cellBuffer, coord.x, coord.y, actor);
         }
 
-        public void SetActor(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity actor)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity actor)
         {
             if (!IsValidCoord(x, y))
             {
@@ -45,17 +62,17 @@ namespace Timespawn.TinyRogue.Maps
             }
 
             Cell cell = cellBuffer[GetIndex(x, y)];
-            cellBuffer[GetIndex(x, y)] = new Cell(cell.Terrain, actor);
+            cellBuffer[GetIndex(x, y)] = new Cell(cell.Ground, actor);
         }
 
-        public bool HasActor(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        public bool HasUnit(DynamicBuffer<Cell> cellBuffer, int2 coord)
         {
-            return GetActor(cellBuffer, coord.x, coord.y) != Entity.Null;
+            return GetUnit(cellBuffer, coord.x, coord.y) != Entity.Null;
         }
 
-        public bool HasActor(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public bool HasUnit(DynamicBuffer<Cell> cellBuffer, int x, int y)
         {
-            return GetActor(cellBuffer, x, y) != Entity.Null;
+            return GetUnit(cellBuffer, x, y) != Entity.Null;
         }
 
         public int GetIndex(int x, int y)

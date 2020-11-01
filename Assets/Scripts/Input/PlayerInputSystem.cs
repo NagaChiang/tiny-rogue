@@ -7,6 +7,7 @@ using Unity.Tiny.Input;
 namespace Timespawn.TinyRogue.Input
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateBefore(typeof(ActorActionSystem))]
     public class PlayerInputSystem : SystemBase
     {
         protected override void OnUpdate()
@@ -42,10 +43,11 @@ namespace Timespawn.TinyRogue.Input
             
             EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
             Entities
-                .WithAll<Player>()
+                .WithAll<Player, TurnToken>()
                 .ForEach((Entity entity) =>
                 {
-                    commandBuffer.AddComponent(entity, new ActorCommand(direction));
+                    commandBuffer.RemoveComponent<TurnToken>(entity);
+                    commandBuffer.AddComponent(entity, new ActorAction(direction));
                 }).Run();
 
             commandBuffer.Playback(EntityManager);
