@@ -1,4 +1,5 @@
 ﻿using Timespawn.Core.Common;
+using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
 using Unity.Collections;
 using Unity.Entities;
@@ -10,16 +11,10 @@ namespace Timespawn.TinyRogue.AI
     [UpdateBefore(typeof(ActorActionSystem))]
     public class MobAISystem : SystemBase
     {
-        private Random Random;
-
-        protected override void OnCreate()
-        {
-            Random = new Random(10); // TODO: Random system
-        }
-
         protected override void OnUpdate()
         {
-            Random random = Random;
+            NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
+            Random random = randomArray[0];
             int directionCount = CommonUtils.GetEnumCount<Direction2D>();
 
             EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
@@ -36,7 +31,7 @@ namespace Timespawn.TinyRogue.AI
             commandBuffer.Playback(EntityManager);
             commandBuffer.Dispose();
 
-            Random = random;
+            randomArray[0] = random;
         }
     }
 }
