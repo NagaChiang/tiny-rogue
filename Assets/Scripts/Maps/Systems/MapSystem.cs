@@ -1,5 +1,9 @@
 ﻿using Timespawn.TinyRogue.Assets;
+using Timespawn.TinyRogue.Common;
+using Timespawn.TinyRogue.UI;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
@@ -9,6 +13,17 @@ namespace Timespawn.TinyRogue.Maps
     {
         private Entity MapEntity;
         private EntityQuery MapQuery;
+
+        private static void AddHealthBar(EntityCommandBuffer commandBuffer, Entity entity, Entity healthBarPrefab)
+        {
+            Entity healthBarEntity = commandBuffer.Instantiate(healthBarPrefab);
+            commandBuffer.AddComponent(healthBarEntity, new Parent {Value = entity});
+            commandBuffer.AddComponent(healthBarEntity, new LocalToParent {Value = float4x4.identity});
+            commandBuffer.SetComponent(healthBarEntity, new Translation {Value = new float3(-0.5f, 0.5f, 0.0f)});
+
+            commandBuffer.AddComponent(entity, new HealthBarLink(healthBarEntity));
+            commandBuffer.AppendToBuffer(entity, new LinkedEntityGroup {Value = healthBarEntity});
+        }
 
         public Entity GetMapEntity()
         {
@@ -28,42 +43,54 @@ namespace Timespawn.TinyRogue.Maps
         protected override void OnUpdate()
         {
             AssetLoader assetLoader = World.GetOrCreateSystem<AssetSystem>().GetAssetLoader();
+            NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
 
             EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
-            EntityCommandBuffer.ParallelWriter parallelWriter = endInitECBSystem.CreateCommandBuffer().AsParallelWriter();
-            Entities.ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in MapGenerateCommand command) =>
+            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
+            Entities.ForEach((Entity entity, in Translation translation, in MapGenerateCommand command) =>
             {
-                parallelWriter.AddComponent(entityInQueryIndex, entity, new Map());
+                Random random = randomArray[0];
+
+                commandBuffer.AddComponent(entity, new Map());
 
                 Grid grid = new Grid(command);
-                parallelWriter.AddComponent(entityInQueryIndex, entity, grid);
+                commandBuffer.AddComponent(entity, grid);
 
-                DynamicBuffer<Cell> cellBuffer = parallelWriter.AddBuffer<Cell>(entityInQueryIndex, entity);
-                for (ushort y = 0; y < command.Height; y++)
+                DynamicBuffer<Cell> cellBuffer = commandBuffer.AddBuffer<Cell>(entity);
+                for (int y = 0; y < command.Height; y++)
                 {
-                    for (ushort x = 0; x < command.Width; x++)
+                    for (int x = 0; x < command.Width; x++)
                     {
-                        Entity groundEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Terrain, translation.Value, x, y);
-
-                        Entity actorEntity = Entity.Null;
-                        if (x == 2 && y == 2)
-                        {
-                            actorEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Player, translation.Value, x, y);
-                        }
-                        else if (x == 3 && y == 3)
-                        {
-                            actorEntity = grid.Instantiate(parallelWriter, entityInQueryIndex, assetLoader.Mob, translation.Value, x, y);
-                        }
-
-                        Cell cell = new Cell(groundEntity, actorEntity);
+                        Entity groundEntity = grid.Instantiate(commandBuffer, assetLoader.Terrain, translation.Value, x, y);
+                        Cell cell = new Cell(groundEntity, Entity.Null);
                         cellBuffer.Add(cell);
                     }
                 }
 
-                parallelWriter.RemoveComponent<MapGenerateCommand>(entityInQueryIndex, entity);
-            }).ScheduleParallel();
+                // TODO: Units for debugging for now
+                int2 playerCoord = random.NextInt2(new int2(grid.Width, grid.Height));
+                Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
+                AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
+                grid.SetUnit(cellBuffer, playerCoord, playerUnit);
 
-            endInitECBSystem.AddJobHandleForProducer(Dependency);
+                const int mobCount = 10;
+                for (int i = 0; i < mobCount; i++)
+                {
+                    int2 mobCoord = int2.zero;
+                    do
+                    {
+                        mobCoord = random.NextInt2(new int2(grid.Width, grid.Height));
+                    } while (grid.HasUnit(cellBuffer, mobCoord));
+
+                    Entity mobUnit = grid.Instantiate(commandBuffer, assetLoader.Mob, translation.Value, mobCoord);
+                    AddHealthBar(commandBuffer, mobUnit, assetLoader.HealthBar);
+                    grid.SetUnit(cellBuffer, mobCoord, mobUnit);
+                }
+
+                commandBuffer.RemoveComponent<MapGenerateCommand>(entity);
+
+                randomArray[0] = random;
+            }).Run();
         }
     }
 }

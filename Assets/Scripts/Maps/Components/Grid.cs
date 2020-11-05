@@ -1,6 +1,7 @@
 ﻿using Timespawn.Core.Extensions;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Tiny;
 using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
@@ -19,13 +20,57 @@ namespace Timespawn.TinyRogue.Maps
         }
 
         public Entity Instantiate(
+            EntityCommandBuffer commandBuffer,
+            Entity prefab,
+            float3 mapPos,
+            int2 coord)
+        {
+            return Instantiate(commandBuffer, prefab, mapPos, coord.x, coord.y);
+        }
+
+        public Entity Instantiate(
+            EntityCommandBuffer commandBuffer,
+            Entity prefab,
+            float3 mapPos,
+            int x,
+            int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return default;
+            }
+
+            float3 cellPos = GetCellCenter(mapPos, x, y);
+            Entity entity = commandBuffer.Instantiate(prefab);
+            commandBuffer.AddComponent(entity, new Tile(x, y));
+            commandBuffer.SetComponent(entity, new Translation {Value = cellPos});
+
+            return entity;
+        }
+
+        public Entity Instantiate(
             EntityCommandBuffer.ParallelWriter parallelWriter,
             int entityInQueryIndex,
             Entity prefab,
             float3 mapPos,
-            ushort x,
-            ushort y)
+            int2 coord)
         {
+            return Instantiate(parallelWriter, entityInQueryIndex, prefab, mapPos, coord.x, coord.y);
+        }
+
+        public Entity Instantiate(
+            EntityCommandBuffer.ParallelWriter parallelWriter,
+            int entityInQueryIndex,
+            Entity prefab,
+            float3 mapPos,
+            int x,
+            int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return default;
+            }
+
             float3 cellPos = GetCellCenter(mapPos, x, y);
             Entity entity = parallelWriter.Instantiate(entityInQueryIndex, prefab);
             parallelWriter.AddComponent(entityInQueryIndex, entity, new Tile(x, y));
@@ -49,12 +94,12 @@ namespace Timespawn.TinyRogue.Maps
             return cellBuffer[GetIndex(x, y)].Unit;
         }
 
-        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity actor)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity unit)
         {
-            SetUnit(cellBuffer, coord.x, coord.y, actor);
+            SetUnit(cellBuffer, coord.x, coord.y, unit);
         }
 
-        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity actor)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity unit)
         {
             if (!IsValidCoord(x, y))
             {
@@ -62,7 +107,7 @@ namespace Timespawn.TinyRogue.Maps
             }
 
             Cell cell = cellBuffer[GetIndex(x, y)];
-            cellBuffer[GetIndex(x, y)] = new Cell(cell.Ground, actor);
+            cellBuffer[GetIndex(x, y)] = new Cell(cell.Ground, unit);
         }
 
         public bool HasUnit(DynamicBuffer<Cell> cellBuffer, int2 coord)

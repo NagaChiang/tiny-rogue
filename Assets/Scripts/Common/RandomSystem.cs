@@ -2,6 +2,7 @@
 using Unity.Entities;
 using Unity.Jobs.LowLevel.Unsafe;
 using Unity.Mathematics;
+using Unity.Tiny;
 
 namespace Timespawn.TinyRogue.Common
 {
@@ -16,7 +17,9 @@ namespace Timespawn.TinyRogue.Common
 
         protected override void OnCreate()
         {
-            Random seedRandom = Random.CreateFromIndex((uint) Time.ElapsedTime);
+            Random seedRandom = Random.CreateFromIndex((uint) 1); // TODO: Random seed
+            Debug.LogAlways($"Random seed: {seedRandom.state}");
+
             RandomArray = new NativeArray<Random>(JobsUtility.MaxJobThreadCount, Allocator.Persistent);
             for (int i = 0; i < RandomArray.Length; i++)
             {

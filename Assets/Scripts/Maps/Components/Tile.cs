@@ -9,10 +9,10 @@ namespace Timespawn.TinyRogue.Maps
         public ushort x;
         public ushort y;
 
-        public Tile(ushort x, ushort y)
+        public Tile(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.x = (ushort) x;
+            this.y = (ushort) y;
         }
 
         public Tile(int2 coord)
