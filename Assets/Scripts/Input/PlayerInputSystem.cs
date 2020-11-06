@@ -7,6 +7,7 @@ using Unity.Tiny.Input;
 namespace Timespawn.TinyRogue.Input
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateAfter(typeof(TurnSystem))]
     [UpdateBefore(typeof(ActorActionSystem))]
     public class PlayerInputSystem : SystemBase
     {

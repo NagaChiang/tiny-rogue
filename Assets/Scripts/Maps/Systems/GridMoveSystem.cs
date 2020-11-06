@@ -22,7 +22,7 @@ namespace Timespawn.TinyRogue.Maps
             {
                 commandBuffer.RemoveComponent<GridMoveCommand>(entity);
 
-                actor.NextActionTime += 20; // TODO: Data
+                actor.NextActionTime = 20; // TODO: Data
 
                 grid.SetUnit(cellBuffer, tile.x, tile.y, Entity.Null);
                 grid.SetUnit(cellBuffer, command.GetCoord(), entity);

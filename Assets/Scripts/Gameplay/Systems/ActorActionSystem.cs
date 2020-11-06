@@ -1,5 +1,4 @@
 ﻿using Timespawn.Core.Common;
-using Timespawn.TinyRogue.Input;
 using Timespawn.TinyRogue.Maps;
 using Unity.Entities;
 using Unity.Mathematics;

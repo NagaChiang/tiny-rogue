@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Timespawn.EntityTween.Tweens;
+﻿using Timespawn.EntityTween.Tweens;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Tiny;
 
 namespace Timespawn.TinyRogue.Gameplay
@@ -23,7 +21,7 @@ namespace Timespawn.TinyRogue.Gameplay
 
         protected override void OnUpdate()
         {
-            if (TurnTokenQuery.CalculateEntityCount() > 0 || TweeningActorQuery.CalculateEntityCount() > 0)
+            if (!TurnTokenQuery.IsEmptyIgnoreFilter || !TweeningActorQuery.IsEmptyIgnoreFilter)
             {
                 return;
             }
@@ -41,8 +39,7 @@ namespace Timespawn.TinyRogue.Gameplay
 
                     Entities.ForEach((ref Actor actor) =>
                     {
-                        int newTime = actor.NextActionTime - forwardTime;
-                        actor.NextActionTime = (ushort) math.min(newTime, 0);
+                        actor.NextActionTime -= forwardTime;
                     }).Run();
                 }
             }

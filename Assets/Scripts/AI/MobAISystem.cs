@@ -8,6 +8,7 @@ using Unity.Mathematics;
 namespace Timespawn.TinyRogue.AI
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateAfter(typeof(TurnSystem))]
     [UpdateBefore(typeof(ActorActionSystem))]
     public class MobAISystem : SystemBase
     {

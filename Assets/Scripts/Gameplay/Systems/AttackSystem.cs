@@ -24,7 +24,7 @@ namespace Timespawn.TinyRogue.Gameplay
                     return;
                 }
 
-                actor.NextActionTime += 20; // TODO: Data
+                actor.NextActionTime = 20; // TODO: Data
 
                 Health targetHealth = entityManager.GetComponentData<Health>(target);
                 int newHealth = targetHealth.Current - attack.Value;
