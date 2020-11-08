@@ -16,7 +16,7 @@ namespace Timespawn.TinyRogue.AI
         {
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
             Random random = randomArray[0];
-            int directionCount = CommonUtils.GetEnumCount<Direction2D>();
+            int directionCount = (int) Direction2D.Right + 1;
 
             EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
             Entities

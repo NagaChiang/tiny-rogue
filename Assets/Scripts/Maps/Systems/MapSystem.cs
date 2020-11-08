@@ -8,10 +8,10 @@ using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public class MapSystem : SystemBase
     {
         private Entity MapEntity;
+        private EntityQuery MapCommandQuery;
         private EntityQuery MapQuery;
 
         private static void AddHealthBar(EntityCommandBuffer commandBuffer, Entity entity, Entity healthBarPrefab)
@@ -42,55 +42,62 @@ namespace Timespawn.TinyRogue.Maps
 
         protected override void OnUpdate()
         {
+            if (MapCommandQuery.IsEmptyIgnoreFilter)
+            {
+                return;
+            }
+
             AssetLoader assetLoader = World.GetOrCreateSystem<AssetSystem>().GetAssetLoader();
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
 
-            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EndSimulationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
             EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
-            Entities.ForEach((Entity entity, in Translation translation, in MapGenerateCommand command) =>
-            {
-                Random random = randomArray[0];
-
-                commandBuffer.AddComponent(entity, new Map());
-
-                Grid grid = new Grid(command);
-                commandBuffer.AddComponent(entity, grid);
-
-                DynamicBuffer<Cell> cellBuffer = commandBuffer.AddBuffer<Cell>(entity);
-                for (int y = 0; y < command.Height; y++)
+            Entities
+                .WithStoreEntityQueryInField(ref MapCommandQuery)
+                .ForEach((Entity entity, in Translation translation, in MapGenerateCommand command) =>
                 {
-                    for (int x = 0; x < command.Width; x++)
+                    Random random = randomArray[0];
+
+                    commandBuffer.AddComponent(entity, new Map());
+
+                    Grid grid = new Grid(command);
+                    commandBuffer.AddComponent(entity, grid);
+
+                    DynamicBuffer<Cell> cellBuffer = commandBuffer.AddBuffer<Cell>(entity);
+                    for (int y = 0; y < command.Height; y++)
                     {
-                        Entity groundEntity = grid.Instantiate(commandBuffer, assetLoader.Terrain, translation.Value, x, y);
-                        Cell cell = new Cell(groundEntity, Entity.Null);
-                        cellBuffer.Add(cell);
+                        for (int x = 0; x < command.Width; x++)
+                        {
+                            Entity groundEntity = grid.Instantiate(commandBuffer, assetLoader.Terrain, translation.Value, x, y);
+                            Cell cell = new Cell(groundEntity, Entity.Null);
+                            cellBuffer.Add(cell);
+                        }
                     }
-                }
 
-                // TODO: Units for debugging for now
-                int2 playerCoord = random.NextInt2(new int2(grid.Width, grid.Height));
-                Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
-                AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
-                grid.SetUnit(cellBuffer, playerCoord, playerUnit);
+                    // TODO: Units for debugging for now
+                    int2 playerCoord = random.NextInt2(new int2(grid.Width, grid.Height));
+                    Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
+                    AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
+                    grid.SetUnit(cellBuffer, playerCoord, playerUnit);
 
-                const int mobCount = 10;
-                for (int i = 0; i < mobCount; i++)
-                {
-                    int2 mobCoord = int2.zero;
-                    do
+                    const int mobCount = 10;
+                    for (int i = 0; i < mobCount; i++)
                     {
-                        mobCoord = random.NextInt2(new int2(grid.Width, grid.Height));
-                    } while (grid.HasUnit(cellBuffer, mobCoord));
+                        int2 mobCoord = int2.zero;
+                        do
+                        {
+                            mobCoord = random.NextInt2(new int2(grid.Width, grid.Height));
+                        } while (grid.HasUnit(cellBuffer, mobCoord));
 
-                    Entity mobUnit = grid.Instantiate(commandBuffer, assetLoader.Mob, translation.Value, mobCoord);
-                    AddHealthBar(commandBuffer, mobUnit, assetLoader.HealthBar);
-                    grid.SetUnit(cellBuffer, mobCoord, mobUnit);
-                }
+                        Entity mobUnit = grid.Instantiate(commandBuffer, assetLoader.Mob, translation.Value, mobCoord);
+                        AddHealthBar(commandBuffer, mobUnit, assetLoader.HealthBar);
+                        grid.SetUnit(cellBuffer, mobCoord, mobUnit);
+                    }
 
-                commandBuffer.RemoveComponent<MapGenerateCommand>(entity);
+                    commandBuffer.RemoveComponent<MapGenerateCommand>(entity);
 
-                randomArray[0] = random;
-            }).Run();
+                    randomArray[0] = random;
+                }).Run();
         }
     }
 }

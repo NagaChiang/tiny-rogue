@@ -5,16 +5,21 @@ namespace Timespawn.TinyRogue.Assets
     public class AssetSystem : SystemBase
     {
         private Entity AssetLoaderEntity;
+        private EntityQuery LoaderQuery;
 
         public AssetLoader GetAssetLoader()
         {
+            if (AssetLoaderEntity == Entity.Null)
+            {
+                AssetLoaderEntity = LoaderQuery.GetSingletonEntity();
+            }
+
             return EntityManager.GetComponentData<AssetLoader>(AssetLoaderEntity);
         }
 
-        protected override void OnStartRunning()
+        protected override void OnCreate()
         {
-            EntityQuery query = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<AssetLoader>());
-            AssetLoaderEntity = query.GetSingletonEntity();
+            LoaderQuery = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<AssetLoader>());
         }
 
         protected override void OnUpdate()
