@@ -1,7 +1,5 @@
-﻿using Timespawn.EntityTween.Tweens;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
-using Unity.Tiny;
 
 namespace Timespawn.TinyRogue.Gameplay
 {
@@ -15,13 +13,12 @@ namespace Timespawn.TinyRogue.Gameplay
         protected override void OnCreate()
         {
             TurnTokenQuery = GetEntityQuery(ComponentType.ReadOnly<TurnToken>());
-            TweeningActorQuery = GetEntityQuery(ComponentType.ReadOnly<TweenState>(), ComponentType.ReadOnly<Actor>());
             ActorQuery = GetEntityQuery(ComponentType.ReadOnly<Actor>());
         }
 
         protected override void OnUpdate()
         {
-            if (!TurnTokenQuery.IsEmptyIgnoreFilter || !TweeningActorQuery.IsEmptyIgnoreFilter)
+            if (!TurnTokenQuery.IsEmptyIgnoreFilter)
             {
                 return;
             }
