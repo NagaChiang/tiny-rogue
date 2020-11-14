@@ -14,29 +14,35 @@ namespace Timespawn.TinyRogue.Gameplay
             Grid grid = EntityManager.GetComponentData<Grid>(mapEntity);
             DynamicBuffer<Cell> cellBuffer = EntityManager.GetBuffer<Cell>(mapEntity);
 
-            EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>().CreateCommandBuffer();
-            Entities.ForEach((Entity entity, in ActorAction command, in Tile tile) =>
-            {
-                commandBuffer.RemoveComponent<ActorAction>(entity);
+            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
+            Entities
+                .WithAll<TurnToken>()
+                .ForEach((Entity entity, in ActorAction command, in Tile tile) =>
+                {
+                    commandBuffer.RemoveComponent<TurnToken>(entity);
+                    commandBuffer.RemoveComponent<ActorAction>(entity);
 
-                int2 targetCoord = tile.GetCoord() + CommonUtils.DirectionToInt2(command.Direction);
-                if (!grid.IsValidCoord(targetCoord))
-                {
-                    return;
-                }
+                    int2 targetCoord = tile.GetCoord() + CommonUtils.DirectionToInt2(command.Direction);
+                    if (!grid.IsValidCoord(targetCoord))
+                    {
+                        return;
+                    }
 
-                Entity target = grid.GetUnit(cellBuffer, targetCoord);
-                if (target != Entity.Null)
-                {
-                    // Attack
-                    commandBuffer.AddComponent(entity, new AttackCommand(target));
-                }
-                else
-                {
-                    // Move
-                    commandBuffer.AddComponent(entity, new GridMoveCommand(targetCoord));
-                }
-            }).Run();
+                    Entity target = grid.GetUnit(cellBuffer, targetCoord);
+                    if (target != Entity.Null)
+                    {
+                        // Attack
+                        commandBuffer.AddComponent(entity, new AttackCommand(target));
+                    }
+                    else
+                    {
+                        // Move
+                        commandBuffer.AddComponent(entity, new GridMoveCommand(targetCoord));
+                    }
+                }).Schedule();
+
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

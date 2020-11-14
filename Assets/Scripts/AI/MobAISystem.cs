@@ -15,24 +15,24 @@ namespace Timespawn.TinyRogue.AI
         protected override void OnUpdate()
         {
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
-            Random random = randomArray[0];
             int directionCount = (int) Direction2D.Right + 1;
 
-            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
             Entities
                 .WithAll<TurnToken, Mob>()
+                .WithNone<ActorAction>()
                 .ForEach((Entity entity) =>
                 {
-                    commandBuffer.RemoveComponent<TurnToken>(entity);
+                    Random random = randomArray[0];
 
                     Direction2D direction = (Direction2D) random.NextInt(directionCount);
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
-                }).Run();
 
-            commandBuffer.Playback(EntityManager);
-            commandBuffer.Dispose();
+                    randomArray[0] = random;
+                }).Schedule();
 
-            randomArray[0] = random;
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

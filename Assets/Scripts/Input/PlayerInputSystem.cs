@@ -42,17 +42,17 @@ namespace Timespawn.TinyRogue.Input
                 return;
             }
             
-            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
             Entities
                 .WithAll<Player, TurnToken>()
+                .WithNone<ActorAction>()
                 .ForEach((Entity entity) =>
                 {
-                    commandBuffer.RemoveComponent<TurnToken>(entity);
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
                 }).Run();
 
-            commandBuffer.Playback(EntityManager);
-            commandBuffer.Dispose();
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }
