@@ -22,6 +22,7 @@ namespace Timespawn.TinyRogue.Maps
             commandBuffer.SetComponent(healthBarEntity, new Translation {Value = new float3(-0.5f, 0.5f, 0.0f)});
 
             commandBuffer.AddComponent(entity, new HealthBarLink(healthBarEntity));
+            commandBuffer.AppendToBuffer(entity, new LinkedEntityGroup {Value = entity});
             commandBuffer.AppendToBuffer(entity, new LinkedEntityGroup {Value = healthBarEntity});
         }
 
