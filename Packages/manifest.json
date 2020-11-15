@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.timespawn.core": "file:../../timespawn-core",
-    "com.timespawn.entitytween": "https://github.com/NagaChiang/entity-tween.git",
+    "com.timespawn.entitytween": "https://github.com/NagaChiang/entity-tween.git#develop",
     "com.unity.2d.entities": "0.29.0-preview.3",
     "com.unity.2d.pixel-perfect": "3.0.2",
     "com.unity.2d.sprite": "1.0.0",

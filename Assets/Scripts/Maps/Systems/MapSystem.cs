@@ -1,10 +1,12 @@
-﻿using Timespawn.TinyRogue.Assets;
+﻿using System;
+using Timespawn.TinyRogue.Assets;
 using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.UI;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Random = Unity.Mathematics.Random;
 
 namespace Timespawn.TinyRogue.Maps
 {
@@ -59,18 +61,33 @@ namespace Timespawn.TinyRogue.Maps
                 {
                     Random random = randomArray[0];
 
+                    commandBuffer.RemoveComponent<MapGenerateCommand>(entity);
                     commandBuffer.AddComponent(entity, new Map());
 
-                    Grid grid = new Grid(command);
+                    MapGenerator generator = new MapGenerator(command.MapSetting);
+                    NativeArray<CellType> cellData = generator.Generate(ref random);
+
+                    Grid grid = new Grid(command.MapSetting.Width, command.MapSetting.Height);
                     commandBuffer.AddComponent(entity, grid);
 
                     DynamicBuffer<Cell> cellBuffer = commandBuffer.AddBuffer<Cell>(entity);
-                    for (int y = 0; y < command.Height; y++)
+                    for (int y = 0; y < command.MapSetting.Height; y++)
                     {
-                        for (int x = 0; x < command.Width; x++)
+                        for (int x = 0; x < command.MapSetting.Width; x++)
                         {
-                            Entity groundEntity = grid.Instantiate(commandBuffer, assetLoader.Terrain, translation.Value, x, y);
-                            Cell cell = new Cell(groundEntity, Entity.Null);
+                            Entity prefab = Entity.Null;
+                            switch (cellData[grid.GetIndex(x, y)])
+                            {
+                                case CellType.Ground:
+                                    prefab = assetLoader.Ground;
+                                    break;
+                                case CellType.Wall:
+                                    prefab = assetLoader.Wall;
+                                    break;
+                            }
+
+                            Entity terrainEntity = grid.Instantiate(commandBuffer, prefab, translation.Value, x, y);
+                            Cell cell = new Cell(terrainEntity, Entity.Null);
                             cellBuffer.Add(cell);
                         }
                     }
@@ -79,9 +96,9 @@ namespace Timespawn.TinyRogue.Maps
                     int2 playerCoord = random.NextInt2(new int2(grid.Width, grid.Height));
                     Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
                     AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
-                    grid.SetUnit(cellBuffer, playerCoord, playerUnit);
+                    grid.SetUnit(cellBuffer, playerCoord, playerUnit);  
 
-                    const int mobCount = 10;
+                    const int mobCount = 5;
                     for (int i = 0; i < mobCount; i++)
                     {
                         int2 mobCoord = int2.zero;
@@ -95,10 +112,12 @@ namespace Timespawn.TinyRogue.Maps
                         grid.SetUnit(cellBuffer, mobCoord, mobUnit);
                     }
 
-                    commandBuffer.RemoveComponent<MapGenerateCommand>(entity);
+                    generator.Dispose();
 
                     randomArray[0] = random;
-                }).Run();
+                }).Schedule();
+
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

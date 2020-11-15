@@ -1,7 +1,6 @@
 ﻿using Timespawn.Core.Extensions;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Tiny;
 using Unity.Transforms;
 
 namespace Timespawn.TinyRogue.Maps
@@ -13,10 +12,10 @@ namespace Timespawn.TinyRogue.Maps
         public ushort Width;
         public ushort Height;
 
-        public Grid(MapGenerateCommand command)
+        public Grid(ushort width, ushort height)
         {
-            Width = command.Width;
-            Height = command.Height;
+            Width = width;
+            Height = height;
         }
 
         public Entity Instantiate(

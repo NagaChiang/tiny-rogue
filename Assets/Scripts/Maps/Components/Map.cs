@@ -4,6 +4,6 @@ namespace Timespawn.TinyRogue.Maps
 {
     public struct Map : IComponentData
     {
-
+        
     }
 }
