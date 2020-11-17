@@ -15,19 +15,19 @@ namespace Timespawn.TinyRogue.Input
             bool hasInput = true;
             Direction direction = default;
             InputSystem inputSystem = World.GetOrCreateSystem<InputSystem>();
-            if (inputSystem.GetKey(KeyCode.UpArrow))
+            if (inputSystem.GetKeyDown(KeyCode.UpArrow))
             {
                 direction = Direction.Up;
             }
-            else if (inputSystem.GetKey(KeyCode.DownArrow))
+            else if (inputSystem.GetKeyDown(KeyCode.DownArrow))
             {
                 direction = Direction.Down;
             }
-            else if (inputSystem.GetKey(KeyCode.LeftArrow))
+            else if (inputSystem.GetKeyDown(KeyCode.LeftArrow))
             {
                 direction = Direction.Left;
             }
-            else if (inputSystem.GetKey(KeyCode.RightArrow))
+            else if (inputSystem.GetKeyDown(KeyCode.RightArrow))
             {
                 direction = Direction.Right;
             }
@@ -40,7 +40,7 @@ namespace Timespawn.TinyRogue.Input
             {
                 return;
             }
-            
+
             EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
             EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
             Entities
