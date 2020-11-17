@@ -32,6 +32,11 @@ namespace Timespawn.TinyRogue.Editor.CI
             }
 
             BuildResult buildResult = buildConfig.Build();
+            if (buildResult.Failed)
+            {
+                Debug.LogError($"Build failed with configuration {buildConfigurationName}.");
+            }
+
             buildResult.LogResult();
         }
 
