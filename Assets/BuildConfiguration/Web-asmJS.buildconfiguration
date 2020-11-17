@@ -17,7 +17,7 @@
         },
         {
             "$type": "Unity.Entities.Runtime.Build.DotsRuntimeBurstSettings, Unity.Entities.Runtime.Build",
-            "EnableBurst": false
+            "EnableBurst": true
         }
     ]
 }

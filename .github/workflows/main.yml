@@ -1,0 +1,42 @@
+name: Unity
+on:
+  push:
+    tags:
+jobs:
+  build:
+    name: Build (${{ matrix.unityVersion }}, ${{ matrix.buildConfiguration }})
+    runs-on: ubuntu-latest
+    container: gableroux/unity3d:${{ matrix.unityVersion }}
+    env:
+      unityCommand: /opt/Unity/Editor/Unity -batchmode -nographics -logfile /dev/stdout -quit
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2020.1.3f1
+        buildConfiguration:
+          - Web-Wasm
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Cache
+          uses: actions/cache@v2
+          with:
+            path: Library
+            key: Library-${{ matrix.unityVersion }}-${{ matrix.buildConfiguration }}
+            restore-keys: |
+              Library-${{ matrix.unityVersion }}-
+              Library-
+        - name: Activate
+          run: ${{ env.unityCommand }} -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }}
+        - name: Build
+          run: ${{ env.unityCommand }} -projectPath '.' -executeMethod Timespawn.TinyRogue.Editor.CI.BuildUtils.BuildDefaultScene ${{ matrix.buildConfiguration }}
+        - name: Return license
+          if: ${{ always() }}
+          run: ${{ env.unityCommand }} -returnLicense
+        - name: Upload build
+          uses: actions/upload-artifact@v2
+          with:
+            name: ${{ matrix.buildConfiguration }}
+            path: Builds/*
+            if-no-files-found: error
