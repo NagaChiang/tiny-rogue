@@ -7,7 +7,6 @@ namespace Timespawn.TinyRogue.Gameplay
     public class TurnSystem : SystemBase
     {
         private EntityQuery TurnTokenQuery;
-        private EntityQuery TweeningActorQuery;
         private EntityQuery ActorQuery;
 
         protected override void OnCreate()

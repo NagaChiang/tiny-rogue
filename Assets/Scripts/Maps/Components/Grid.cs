@@ -1,4 +1,6 @@
 ﻿using Timespawn.Core.Extensions;
+using Timespawn.TinyRogue.Gameplay;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -20,17 +22,17 @@ namespace Timespawn.TinyRogue.Maps
 
         public Entity Instantiate(
             EntityCommandBuffer commandBuffer,
-            Entity prefab,
-            float3 mapPos,
-            int2 coord)
+            in Entity prefab,
+            in float3 mapPos,
+            in int2 coord)
         {
             return Instantiate(commandBuffer, prefab, mapPos, coord.x, coord.y);
         }
 
         public Entity Instantiate(
             EntityCommandBuffer commandBuffer,
-            Entity prefab,
-            float3 mapPos,
+            in Entity prefab,
+            in float3 mapPos,
             int x,
             int y)
         {
@@ -50,9 +52,9 @@ namespace Timespawn.TinyRogue.Maps
         public Entity Instantiate(
             EntityCommandBuffer.ParallelWriter parallelWriter,
             int entityInQueryIndex,
-            Entity prefab,
-            float3 mapPos,
-            int2 coord)
+            in Entity prefab,
+            in float3 mapPos,
+            in int2 coord)
         {
             return Instantiate(parallelWriter, entityInQueryIndex, prefab, mapPos, coord.x, coord.y);
         }
@@ -60,8 +62,8 @@ namespace Timespawn.TinyRogue.Maps
         public Entity Instantiate(
             EntityCommandBuffer.ParallelWriter parallelWriter,
             int entityInQueryIndex,
-            Entity prefab,
-            float3 mapPos,
+            in Entity prefab,
+            in float3 mapPos,
             int x,
             int y)
         {
@@ -78,12 +80,12 @@ namespace Timespawn.TinyRogue.Maps
             return entity;
         }
 
-        public Entity GetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        public Entity GetUnit(in DynamicBuffer<Cell> cellBuffer, in int2 coord)
         {
             return GetUnit(cellBuffer, coord.x, coord.y);
         }
 
-        public Entity GetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public Entity GetUnit(in DynamicBuffer<Cell> cellBuffer, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
@@ -93,12 +95,12 @@ namespace Timespawn.TinyRogue.Maps
             return cellBuffer[GetIndex(x, y)].Unit;
         }
 
-        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int2 coord, Entity unit)
+        public void SetUnit(in DynamicBuffer<Cell> cellBuffer, in int2 coord, in Entity unit)
         {
             SetUnit(cellBuffer, coord.x, coord.y, unit);
         }
 
-        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y, Entity unit)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, int x, int y, in Entity unit)
         {
             if (!IsValidCoord(x, y))
             {
@@ -106,17 +108,32 @@ namespace Timespawn.TinyRogue.Maps
             }
 
             Cell cell = cellBuffer[GetIndex(x, y)];
-            cellBuffer[GetIndex(x, y)] = new Cell(cell.Ground, unit);
+            cellBuffer[GetIndex(x, y)] = new Cell(cell.Terrain, unit);
         }
 
-        public bool HasUnit(DynamicBuffer<Cell> cellBuffer, int2 coord)
+        public bool HasUnit(in DynamicBuffer<Cell> cellBuffer, int2 coord)
         {
             return GetUnit(cellBuffer, coord.x, coord.y) != Entity.Null;
         }
 
-        public bool HasUnit(DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public bool HasUnit(in DynamicBuffer<Cell> cellBuffer, int x, int y)
         {
             return GetUnit(cellBuffer, x, y) != Entity.Null;
+        }
+
+        public Entity GetTerrain(in DynamicBuffer<Cell> cellBuffer, in int2 coord)
+        {
+            return GetTerrain(cellBuffer, coord.x, coord.y);
+        }
+
+        public Entity GetTerrain(in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return Entity.Null;
+            }
+
+            return cellBuffer[GetIndex(x, y)].Terrain;
         }
 
         public int GetIndex(int x, int y)
@@ -124,12 +141,12 @@ namespace Timespawn.TinyRogue.Maps
             return x + (y * Width);
         }
 
-        public float3 GetCellCenter(float3 gridPosition, int2 coord)
+        public float3 GetCellCenter(in float3 gridPosition, in int2 coord)
         {
             return GetCellCenter(gridPosition, coord.x, coord.y);
         }
 
-        public float3 GetCellCenter(float3 gridPosition, int x, int y)
+        public float3 GetCellCenter(in float3 gridPosition, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
@@ -166,7 +183,7 @@ namespace Timespawn.TinyRogue.Maps
             return center;
         }
 
-        public bool IsValidCoord(int2 coord)
+        public bool IsValidCoord(in int2 coord)
         {
             return IsValidCoord(coord.x, coord.y);
         }
@@ -174,6 +191,54 @@ namespace Timespawn.TinyRogue.Maps
         public bool IsValidCoord(int x, int y)
         {
             return x >= 0 && x < Width && y >= 0 && y < Height;
+        }
+
+        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int2 coord)
+        {
+            return IsWalkable(blockFromEntity, cellBuffer, coord.x, coord.y);
+        }
+
+        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        {
+            if (!IsValidCoord(x, y))
+            {
+                return false;
+            }
+
+            Entity terrain = GetTerrain(cellBuffer, x, y);
+            if (terrain == Entity.Null)
+            {
+                return false;
+            }
+
+            return !blockFromEntity.HasComponent(terrain);
+        }
+
+        public int2 GetRandomWalkableCoord(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, ref Random random)
+        {
+            NativeList<int2> coords = new NativeList<int2>(Allocator.Temp);
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    if (HasUnit(cellBuffer, x, y))
+                    {
+                        continue;
+                    }
+
+                    if (!IsWalkable(blockFromEntity, cellBuffer, x, y))
+                    {
+                        continue;
+                    }
+
+                    coords.Add(new int2(x, y));
+                }
+            }
+
+            int2 coord = coords[random.NextInt(coords.Length)];
+            coords.Dispose();
+
+            return coord;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Timespawn.Core.Common;
 using Timespawn.TinyRogue.Gameplay;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Tiny.Input;
 
@@ -16,19 +15,19 @@ namespace Timespawn.TinyRogue.Input
             bool hasInput = true;
             Direction2D direction = default;
             InputSystem inputSystem = World.GetOrCreateSystem<InputSystem>();
-            if (inputSystem.GetKeyDown(KeyCode.UpArrow))
+            if (inputSystem.GetKey(KeyCode.UpArrow))
             {
                 direction = Direction2D.Up;
             }
-            else if (inputSystem.GetKeyDown(KeyCode.DownArrow))
+            else if (inputSystem.GetKey(KeyCode.DownArrow))
             {
                 direction = Direction2D.Down;
             }
-            else if (inputSystem.GetKeyDown(KeyCode.LeftArrow))
+            else if (inputSystem.GetKey(KeyCode.LeftArrow))
             {
                 direction = Direction2D.Left;
             }
-            else if (inputSystem.GetKeyDown(KeyCode.RightArrow))
+            else if (inputSystem.GetKey(KeyCode.RightArrow))
             {
                 direction = Direction2D.Right;
             }
@@ -50,7 +49,7 @@ namespace Timespawn.TinyRogue.Input
                 .ForEach((Entity entity) =>
                 {
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
-                }).Run();
+                }).Schedule();
 
             endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
