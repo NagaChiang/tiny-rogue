@@ -1,4 +1,4 @@
-﻿using Timespawn.Core.Common;
+﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
 using Unity.Entities;
 using Unity.Tiny.Input;
@@ -13,23 +13,23 @@ namespace Timespawn.TinyRogue.Input
         protected override void OnUpdate()
         {
             bool hasInput = true;
-            Direction2D direction = default;
+            Direction direction = default;
             InputSystem inputSystem = World.GetOrCreateSystem<InputSystem>();
             if (inputSystem.GetKey(KeyCode.UpArrow))
             {
-                direction = Direction2D.Up;
+                direction = Direction.Up;
             }
             else if (inputSystem.GetKey(KeyCode.DownArrow))
             {
-                direction = Direction2D.Down;
+                direction = Direction.Down;
             }
             else if (inputSystem.GetKey(KeyCode.LeftArrow))
             {
-                direction = Direction2D.Left;
+                direction = Direction.Left;
             }
             else if (inputSystem.GetKey(KeyCode.RightArrow))
             {
-                direction = Direction2D.Right;
+                direction = Direction.Right;
             }
             else
             {

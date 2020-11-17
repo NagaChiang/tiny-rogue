@@ -1,5 +1,4 @@
-﻿using Timespawn.Core.Common;
-using Timespawn.TinyRogue.Common;
+﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
 using Unity.Collections;
 using Unity.Entities;
@@ -15,7 +14,7 @@ namespace Timespawn.TinyRogue.AI
         protected override void OnUpdate()
         {
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
-            int directionCount = (int) Direction2D.Right + 1;
+            int directionCount = (int) Direction.Right + 1;
 
             EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
             EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
@@ -26,7 +25,7 @@ namespace Timespawn.TinyRogue.AI
                 {
                     Random random = randomArray[0];
 
-                    Direction2D direction = (Direction2D) random.NextInt(directionCount);
+                    Direction direction = (Direction) random.NextInt(directionCount);
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
 
                     randomArray[0] = random;

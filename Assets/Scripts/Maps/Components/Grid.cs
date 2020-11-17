@@ -1,4 +1,4 @@
-﻿using Timespawn.Core.Extensions;
+﻿using Timespawn.TinyRogue.Extensions;
 using Timespawn.TinyRogue.Gameplay;
 using Unity.Collections;
 using Unity.Entities;

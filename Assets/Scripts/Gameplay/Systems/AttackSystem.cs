@@ -1,6 +1,6 @@
-﻿using Timespawn.Core.Extensions;
-using Timespawn.EntityTween.Math;
+﻿using Timespawn.EntityTween.Math;
 using Timespawn.EntityTween.Tweens;
+using Timespawn.TinyRogue.Extensions;
 using Timespawn.TinyRogue.Maps;
 using Unity.Entities;
 using Unity.Mathematics;

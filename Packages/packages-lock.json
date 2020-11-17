@@ -1,14 +1,5 @@
 {
   "dependencies": {
-    "com.timespawn.core": {
-      "version": "file:../../timespawn-core",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {
-        "com.unity.mathematics": "1.1.0",
-        "com.unity.entities": "0.11.0-preview.7"
-      }
-    },
     "com.timespawn.entitytween": {
       "version": "https://github.com/NagaChiang/entity-tween.git#develop",
       "depth": 0,
