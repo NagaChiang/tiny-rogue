@@ -32,12 +32,13 @@ namespace Timespawn.TinyRogue.Editor.CI
             }
 
             BuildResult buildResult = buildConfig.Build();
+            buildResult.LogResult();
+
             if (buildResult.Failed)
             {
                 Debug.LogError($"Build failed with configuration {buildConfigurationName}.");
+                EditorApplication.Exit(1);
             }
-
-            buildResult.LogResult();
         }
 
         private static string[] GetExecuteMethodArguments(string methodFullName)
