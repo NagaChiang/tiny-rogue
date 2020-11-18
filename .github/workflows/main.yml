@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         unityVersion:
-          - 2020.1.3f1
+          - 2020.1.12f1
         buildConfiguration:
           - Web-asmJS
     steps:
