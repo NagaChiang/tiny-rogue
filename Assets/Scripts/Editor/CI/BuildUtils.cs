@@ -11,10 +11,9 @@ namespace Timespawn.TinyRogue.Editor.CI
     {
         private const string BuildConfigurationFolderPath = "Assets/BuildConfiguration";
 
-        [MenuItem("Test/Build")]
-        public static void BuildDefaultScene()
+        public static void CommandBuild()
         {
-            string[] args = GetExecuteMethodArguments(typeof(BuildUtils).FullName + "." + nameof(BuildDefaultScene));
+            string[] args = GetExecuteMethodArguments(typeof(BuildUtils).FullName + "." + nameof(CommandBuild));
             string buildConfigurationName = args.ElementAtOrDefault(0);
 
             Build(buildConfigurationName);

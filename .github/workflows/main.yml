@@ -28,7 +28,7 @@ jobs:
             Library-${{ matrix.unityVersion }}-
             Library-
       - name: Activate and Build
-        run: ${{ env.unityCommand }} -projectPath '.' -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }} -executeMethod Timespawn.TinyRogue.Editor.CI.BuildUtils.BuildDefaultScene ${{ matrix.buildConfiguration }}
+        run: ${{ env.unityCommand }} -projectPath '.' -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }} -executeMethod Timespawn.TinyRogue.Editor.CI.BuildUtils.CommandBuild ${{ matrix.buildConfiguration }}
       - name: Return license
         if: ${{ always() }}
         run: ${{ env.unityCommand }} -returnLicense
