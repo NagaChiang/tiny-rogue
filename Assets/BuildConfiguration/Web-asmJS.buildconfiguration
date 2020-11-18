@@ -18,10 +18,6 @@
         {
             "$type": "Unity.Entities.Runtime.Build.DotsRuntimeBurstSettings, Unity.Entities.Runtime.Build",
             "EnableBurst": true
-        },
-        {
-            "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
-            "OutputDirectory": "Builds/asmJS"
         }
     ]
 }
