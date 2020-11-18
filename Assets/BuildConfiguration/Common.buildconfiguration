@@ -49,12 +49,6 @@
             "AllowAutoRotateToReversePortrait": true,
             "AllowAutoRotateToLandscape": true,
             "AllowAutoRotateToReverseLandscape": true
-        },
-        {
-            "$type": "Unity.Build.Common.PlayerScriptingDefines, Unity.Build",
-            "Defines": [
-                "UNITY_DOTSRUNTIME"
-            ]
         }
     ]
 }
