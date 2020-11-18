@@ -12,7 +12,8 @@ namespace Timespawn.TinyRogue.Gameplay
             Grid grid = EntityManager.GetComponentData<Grid>(mapEntity);
             DynamicBuffer<Cell> cellBuffer = EntityManager.GetBuffer<Cell>(mapEntity);
 
-            EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
+            EndSimulationEntityCommandBufferSystem endSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = endSimECBSystem.CreateCommandBuffer();
             Entities
                 .WithChangeFilter<Health>()
                 .ForEach((Entity entity, in Health health, in Tile tile) =>
@@ -24,7 +25,9 @@ namespace Timespawn.TinyRogue.Gameplay
 
                     commandBuffer.DestroyEntity(entity);
                     grid.SetUnit(cellBuffer, tile.GetCoord(), Entity.Null);
-                }).Run();
+                }).Schedule();
+
+            endSimECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using Timespawn.EntityTween.Tweens;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
-using Unity.Tiny;
 
 namespace Timespawn.TinyRogue.Gameplay
 {
@@ -9,19 +7,17 @@ namespace Timespawn.TinyRogue.Gameplay
     public class TurnSystem : SystemBase
     {
         private EntityQuery TurnTokenQuery;
-        private EntityQuery TweeningActorQuery;
         private EntityQuery ActorQuery;
 
         protected override void OnCreate()
         {
             TurnTokenQuery = GetEntityQuery(ComponentType.ReadOnly<TurnToken>());
-            TweeningActorQuery = GetEntityQuery(ComponentType.ReadOnly<TweenState>(), ComponentType.ReadOnly<Actor>());
             ActorQuery = GetEntityQuery(ComponentType.ReadOnly<Actor>());
         }
 
         protected override void OnUpdate()
         {
-            if (!TurnTokenQuery.IsEmptyIgnoreFilter || !TweeningActorQuery.IsEmptyIgnoreFilter)
+            if (!TurnTokenQuery.IsEmptyIgnoreFilter)
             {
                 return;
             }
@@ -34,13 +30,15 @@ namespace Timespawn.TinyRogue.Gameplay
                 {
                     ushort forwardTime = EntityManager.GetComponentData<Actor>(nextTurnEntity).NextActionTime;
 
-                    EntityCommandBuffer commandBuffer = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>().CreateCommandBuffer();
+                    EndInitializationEntityCommandBufferSystem endinitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+                    EntityCommandBuffer commandBuffer = endinitECBSystem.CreateCommandBuffer();
                     commandBuffer.AddComponent<TurnToken>(nextTurnEntity);
+                    endinitECBSystem.AddJobHandleForProducer(Dependency);
 
                     Entities.ForEach((ref Actor actor) =>
                     {
                         actor.NextActionTime -= forwardTime;
-                    }).Run();
+                    }).ScheduleParallel();
                 }
             }
 

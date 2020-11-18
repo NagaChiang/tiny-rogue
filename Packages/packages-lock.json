@@ -1,16 +1,7 @@
 {
   "dependencies": {
-    "com.timespawn.core": {
-      "version": "file:../../timespawn-core",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {
-        "com.unity.mathematics": "1.1.0",
-        "com.unity.entities": "0.11.0-preview.7"
-      }
-    },
     "com.timespawn.entitytween": {
-      "version": "https://github.com/NagaChiang/entity-tween.git",
+      "version": "https://github.com/NagaChiang/entity-tween.git#develop",
       "depth": 0,
       "source": "git",
       "dependencies": {
@@ -18,7 +9,7 @@
         "com.unity.burst": "1.3.6",
         "com.unity.mathematics": "1.2.1"
       },
-      "hash": "d069ced56053e6af82af1eb93a3add485d7fe20d"
+      "hash": "6d4d4a00056a6e6dd63b84ab9a69abb748074b83"
     },
     "com.unity.2d.entities": {
       "version": "0.29.0-preview.3",

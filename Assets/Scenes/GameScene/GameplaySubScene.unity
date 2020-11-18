@@ -166,8 +166,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75da8ea6f6e03b548bd9301208502d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 16
-  Height: 16
+  MapSetting:
+    Width: 16
+    Height: 20
+    MinRoomLength: 4
+    MaxRoomLength: 10
+    MinSplitRatio: 0.4
+    MaxSplitRatio: 0.6
 --- !u!1 &1620726674
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae526960766ad1d4c9df213065a7bb59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Terrain: {fileID: 6159733598564428533, guid: 7d58c68fe7e01114cbf25d6338471224, type: 3}
+  Ground: {fileID: 6159733598564428533, guid: 7d58c68fe7e01114cbf25d6338471224, type: 3}
+  Wall: {fileID: 613087840036912193, guid: e254e2f437567e24e8d69fc06a16e060, type: 3}
   Player: {fileID: 8437459810289152016, guid: 3797308ee694b054b9bbb7dbcbe55f06, type: 3}
   Mob: {fileID: 65968882738304204, guid: 2e6a0a3f6f94d4e4a996474c3e88d8f0, type: 3}
   HealthBar: {fileID: 1809183956028385187, guid: 13097489539a3af42af36263a0b97067,

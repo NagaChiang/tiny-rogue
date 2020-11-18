@@ -1,6 +1,5 @@
-﻿using Timespawn.Core.Common;
+﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Tiny.Input;
 
@@ -14,23 +13,23 @@ namespace Timespawn.TinyRogue.Input
         protected override void OnUpdate()
         {
             bool hasInput = true;
-            Direction2D direction = default;
+            Direction direction = default;
             InputSystem inputSystem = World.GetOrCreateSystem<InputSystem>();
             if (inputSystem.GetKeyDown(KeyCode.UpArrow))
             {
-                direction = Direction2D.Up;
+                direction = Direction.Up;
             }
             else if (inputSystem.GetKeyDown(KeyCode.DownArrow))
             {
-                direction = Direction2D.Down;
+                direction = Direction.Down;
             }
             else if (inputSystem.GetKeyDown(KeyCode.LeftArrow))
             {
-                direction = Direction2D.Left;
+                direction = Direction.Left;
             }
             else if (inputSystem.GetKeyDown(KeyCode.RightArrow))
             {
-                direction = Direction2D.Right;
+                direction = Direction.Right;
             }
             else
             {
@@ -41,18 +40,18 @@ namespace Timespawn.TinyRogue.Input
             {
                 return;
             }
-            
-            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
             Entities
                 .WithAll<Player, TurnToken>()
+                .WithNone<ActorAction>()
                 .ForEach((Entity entity) =>
                 {
-                    commandBuffer.RemoveComponent<TurnToken>(entity);
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
-                }).Run();
+                }).Schedule();
 
-            commandBuffer.Playback(EntityManager);
-            commandBuffer.Dispose();
+            endInitECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }
