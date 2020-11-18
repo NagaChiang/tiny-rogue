@@ -6,7 +6,7 @@ jobs:
   build:
     name: Build (${{ matrix.unityVersion }}, ${{ matrix.buildConfiguration }})
     runs-on: ubuntu-latest
-    container: gableroux/unity3d:${{ matrix.unityVersion }}-windows
+    container: gableroux/unity3d:${{ matrix.unityVersion }}
     env:
       unityCommand: /opt/Unity/Editor/Unity -batchmode -nographics -logfile /dev/stdout -quit
     strategy:
