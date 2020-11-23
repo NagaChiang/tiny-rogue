@@ -5,19 +5,18 @@
     "Components": [
         {
             "$type": "Unity.Build.DotsRuntime.DotsRuntimeBuildProfile, Unity.Build.DotsRuntime",
-            "Target": "asmjs",
+            "Target": "android_armv7",
             "Configuration": 2,
             "UseNewPipeline": false,
             "PipelineConstructor": null
         },
         {
-            "$type": "Unity.Build.Web.DotsRuntime.EmscriptenSettings, Unity.Build.Web.DotsRuntime",
-            "EmccCmdLine": "-s TOTAL_MEMORY=256MB",
-            "SingleFileOutput": false
+            "$type": "Unity.Build.Common.ApplicationIdentifier, Unity.Build",
+            "PackageName": "com.Unity.Tiny2D"
         },
         {
-            "$type": "Unity.Entities.Runtime.Build.DotsRuntimeBurstSettings, Unity.Entities.Runtime.Build",
-            "EnableBurst": true
+            "$type": "Unity.Build.Android.AndroidArchitectures, Unity.Build.Android",
+            "Architectures": 2
         }
     ]
 }

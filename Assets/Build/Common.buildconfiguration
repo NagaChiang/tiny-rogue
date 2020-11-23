@@ -4,7 +4,8 @@
         {
             "$type": "Unity.Build.Common.GeneralSettings, Unity.Build",
             "ProductName": "Tiny Rogue",
-            "CompanyName": "Timespawn"
+            "CompanyName": "Timespawn",
+            "Version": "1.0.0"
         },
         {
             "$type": "Unity.Build.Common.SceneList, Unity.Build",
@@ -12,7 +13,7 @@
             "BuildCurrentScene": false,
             "SceneInfos": [
                 {
-                    "Scene": "GlobalObjectId_V1-1-2cda990e2423bbf4892e6590ba056729-102900000-0",
+                    "Scene": "GlobalObjectId_V1-1-dfa6b2b7001c5ef448e5e642b2e31ae4-102900000-0",
                     "AutoLoad": true
                 }
             ]
@@ -20,12 +21,12 @@
         {
             "$type": "Unity.Tiny.Rendering.Settings.TinyRenderingSettings, Unity.Tiny.Rendering.Authoring",
             "WindowSize": {
-                "x": 1920,
-                "y": 1080
+                "x": 1080,
+                "y": 1920
             },
             "RenderResolution": {
-                "x": 1920,
-                "y": 1080
+                "x": 1080,
+                "y": 1920
             },
             "RenderGraphMode": 2,
             "MaxResolution": 2048,
