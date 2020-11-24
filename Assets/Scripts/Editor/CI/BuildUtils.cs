@@ -9,7 +9,7 @@ namespace Timespawn.TinyRogue.Editor.CI
 {
     public static class BuildUtils
     {
-        private const string BuildConfigurationFolderPath = "Assets/BuildConfiguration";
+        private const string BuildConfigurationFolderPath = "Assets/Build";
 
         public static void CommandBuild()
         {
@@ -27,7 +27,7 @@ namespace Timespawn.TinyRogue.Editor.CI
             if (!buildConfig)
             {
                 Debug.LogError($"Build failed. Build configuration {buildConfigurationName} not found.");
-                return;
+                EditorApplication.Exit(1);
             }
 
             BuildResult buildResult = buildConfig.Build();
