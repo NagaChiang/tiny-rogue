@@ -4,7 +4,7 @@ on:
     tags:
 jobs:
   build:
-    name: Build (${{ matrix.unityVersion }}-update-2020-11-05, ${{ matrix.buildConfiguration }})
+    name: Build (${{ matrix.unityVersion }}, ${{ matrix.buildConfiguration }})
     runs-on: ubuntu-latest
     container: gableroux/unity3d:${{ matrix.unityVersion }}
     env:
