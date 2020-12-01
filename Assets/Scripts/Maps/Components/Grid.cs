@@ -136,6 +136,11 @@ namespace Timespawn.TinyRogue.Maps
             return cellBuffer[GetIndex(x, y)].Terrain;
         }
 
+        public int GetIndex(int2 coord)
+        {
+            return GetIndex(coord.x, coord.y);
+        }
+
         public int GetIndex(int x, int y)
         {
             return x + (y * Width);

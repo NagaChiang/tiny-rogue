@@ -17,7 +17,7 @@ namespace Timespawn.TinyRogue.Maps
 
             EndSimulationEntityCommandBufferSystem endSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
             EntityCommandBuffer commandBuffer = endSimECBSystem.CreateCommandBuffer();
-            Entities.ForEach((Entity entity, ref Actor actor, ref Tile tile, in Translation translation, in GridMoveCommand command) =>
+            Entities.ForEach((Entity entity, ref Actor actor, ref Tile tile, ref Translation translation, in GridMoveCommand command) =>
             {
                 commandBuffer.RemoveComponent<GridMoveCommand>(entity);
 
@@ -29,7 +29,8 @@ namespace Timespawn.TinyRogue.Maps
 
                 tile = new Tile(command.GetCoord());
                 float3 targetPos = grid.GetCellCenter(mapTrans.Value, tile.GetCoord());
-                Tween.Move(commandBuffer, entity, translation.Value, targetPos, 0.05f, new EaseDesc(EaseType.SmoothStep, 2)); // TODO: Data
+                //Tween.Move(commandBuffer, entity, translation.Value, targetPos, 0.05f, new EaseDesc(EaseType.SmoothStep, 2)); // TODO: Data
+                translation.Value = targetPos;
             }).Schedule();
 
             endSimECBSystem.AddJobHandleForProducer(Dependency);

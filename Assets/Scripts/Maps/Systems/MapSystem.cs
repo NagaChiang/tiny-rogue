@@ -99,14 +99,16 @@ namespace Timespawn.TinyRogue.Maps
                 ComponentDataFromEntity<Block> blockFromEntity = GetComponentDataFromEntity<Block>(true);
                 Entities
                     .WithReadOnly(blockFromEntity)
-                    .ForEach((ref DynamicBuffer<Cell> cellBuffer, in Translation translation, in Grid grid) =>
+                    .ForEach((Entity entity, in DynamicBuffer<Cell> cellBuffer, in Translation translation, in Grid grid) =>
                     {
                         Random random = randomArray[0];
+
+                        NativeArray<Cell> cells = cellBuffer.ToNativeArray(Allocator.Temp);
 
                         int2 playerCoord = grid.GetRandomWalkableCoord(blockFromEntity, cellBuffer, ref random);
                         Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
                         AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
-                        grid.SetUnit(cellBuffer, playerCoord, playerUnit);
+                        SetCellUnit(ref cells, grid, playerCoord, playerUnit);
 
                         const int mobCount = 10;
                         for (int i = 0; i < mobCount; i++)
@@ -114,7 +116,13 @@ namespace Timespawn.TinyRogue.Maps
                             int2 mobCoord = grid.GetRandomWalkableCoord(blockFromEntity, cellBuffer, ref random);
                             Entity mobUnit = grid.Instantiate(commandBuffer, assetLoader.Mob, translation.Value, mobCoord);
                             AddHealthBar(commandBuffer, mobUnit, assetLoader.HealthBar);
-                            grid.SetUnit(cellBuffer, mobCoord, mobUnit);
+                            SetCellUnit(ref cells, grid, mobCoord, mobUnit);
+                        }
+
+                        commandBuffer.SetBuffer<Cell>(entity);
+                        for (int i = 0; i < cells.Length; i++)
+                        {
+                            commandBuffer.AppendToBuffer(entity, cells[i]);
                         }
 
                         randomArray[0] = random;
@@ -122,6 +130,13 @@ namespace Timespawn.TinyRogue.Maps
             }
 
             endInitECBSystem.AddJobHandleForProducer(Dependency);
+        }
+
+        private static void SetCellUnit(ref NativeArray<Cell> cells, in Grid grid, int2 coord, Entity unitEntity)
+        {
+            int index = grid.GetIndex(coord);
+            Cell cell = cells[index];
+            cells[index] = new Cell(cell.Terrain, unitEntity);
         }
     }
 }

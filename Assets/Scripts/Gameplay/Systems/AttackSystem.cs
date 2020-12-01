@@ -38,7 +38,7 @@ namespace Timespawn.TinyRogue.Gameplay
 
                     float3 start = translation.Value;
                     float3 end = start + (direction.ToFloat3() * 0.5f);
-                    Tween.Move(commandBuffer, entity, start, end, 0.05f, new EaseDesc(EaseType.SmoothStep, 2), true); // TODO: Data
+                    //Tween.Move(commandBuffer, entity, start, end, 0.05f, new EaseDesc(EaseType.SmoothStep, 2), true); // TODO: Data
                 }
             }).Schedule();
 
