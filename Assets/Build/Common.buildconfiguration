@@ -28,7 +28,7 @@
                 "x": 1080,
                 "y": 1920
             },
-            "RenderGraphMode": 2,
+            "RenderGraphMode": 1,
             "MaxResolution": 2048,
             "AutoResizeFrame": true,
             "DisableVsync": false,
