@@ -1,5 +1,6 @@
 ﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
+using Timespawn.TinyRogue.Maps;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -13,21 +14,33 @@ namespace Timespawn.TinyRogue.AI
     {
         protected override void OnUpdate()
         {
+            Entity mapEntity = World.GetOrCreateSystem<MapSystem>().GetMapEntity();
+            Grid grid = GetComponent<Grid>(mapEntity);
+            DynamicBuffer<Cell> cellBuffer = GetBuffer<Cell>(mapEntity);
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
-            int directionCount = (int) Direction.Right + 1;
 
             EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
             EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
             Entities
                 .WithAll<TurnToken, Mob>()
                 .WithNone<ActorAction>()
-                .ForEach((Entity entity) =>
+                .ForEach((Entity entity, in Tile tile) =>
                 {
                     Random random = randomArray[0];
+                    ComponentDataFromEntity<Block> blockFromEntity = GetComponentDataFromEntity<Block>(true);
 
-                    Direction direction = (Direction) random.NextInt(directionCount);
-                    commandBuffer.AddComponent(entity, new ActorAction(direction));
+                    NativeArray<Direction> walkableDirections = grid.GetWalkableDirections(blockFromEntity, cellBuffer, tile.x, tile.y, Allocator.Temp);
+                    if (walkableDirections.Length > 0)
+                    {
+                        Direction direction = walkableDirections[random.NextInt(walkableDirections.Length)];
+                        commandBuffer.AddComponent(entity, new ActorAction(direction));
+                    }
+                    else
+                    {
+                        commandBuffer.RemoveComponent<TurnToken>(entity);
+                    }
 
+                    walkableDirections.Dispose();
                     randomArray[0] = random;
                 }).Schedule();
 

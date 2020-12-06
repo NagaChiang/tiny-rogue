@@ -1,4 +1,5 @@
-﻿using Timespawn.TinyRogue.Extensions;
+﻿using Timespawn.TinyRogue.Common;
+using Timespawn.TinyRogue.Extensions;
 using Timespawn.TinyRogue.Gameplay;
 using Unity.Collections;
 using Unity.Entities;
@@ -244,6 +245,28 @@ namespace Timespawn.TinyRogue.Maps
             coords.Dispose();
 
             return coord;
+        }
+
+        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int2 coord, in Allocator allocator)
+        {
+            return GetWalkableDirections(blockFromEntity, cellBuffer, coord.x, coord.y, allocator);
+        }
+
+        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int x, in int y, in Allocator allocator)
+        {
+            NativeList<Direction> directionList = new NativeList<Direction>(allocator);
+            for (int i = (int) Direction.Up; i <= (int) Direction.Right; i++)
+            {
+                if (IsWalkable(blockFromEntity, cellBuffer, x, y))
+                {
+                    directionList.Add((Direction) i);
+                }
+            }
+
+            NativeArray<Direction> walkableDirections = directionList.ToArray(allocator);
+            directionList.Dispose();
+
+            return walkableDirections;
         }
     }
 }
