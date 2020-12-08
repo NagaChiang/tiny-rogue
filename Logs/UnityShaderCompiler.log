@@ -1,0 +1,22 @@
+Base path: 'C:\Program Files\Unity\Hub\Editor\2020.1.14f1\Editor\Data', plugins path ''
+Cmd: initializeCompiler
+Cmd: compileSnippet
+  api=5 type=0 insize=492 outsize=3274 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=765 outsize=8754 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=657 outsize=35698 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=1005 outsize=41461 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=718 outsize=795 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=266 outsize=1079 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=1814 outsize=4792 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=660 outsize=2891 kw= pd= dkw= ok=1
+Cmd: compileSnippet
+  api=5 type=0 insize=991 outsize=8441 kw= pd= dkw= ok=1
+
+Quitting shader compiler process

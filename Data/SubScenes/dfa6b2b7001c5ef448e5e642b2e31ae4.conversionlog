@@ -1,0 +1,16 @@
+Log: ::Exported Types (by stable hash)::
+Log: 0x7accdf07fb47f2d8 -    8848692593249743576 - Unity.Tiny.Rendering.Light
+Log: 0x4f9488341dad9487 -    5734357982967075975 - Unity.Entities.SceneReference
+Log: 0x4e2aa9492a9e323d -    5632500415692943933 - Unity.Tiny.Rendering.AmbientLight
+Log: 0xeef6af18c981c062 -   17219142746292469858 - Unity.Entities.RequestSceneLoaded
+Log: 0xd6507a30a4a81046 -   15442977471592927302 - Unity.Tiny.Rendering.CameraMask
+Log: 0x64d23646f9e3c6d8 -    7264928827370096344 - Unity.Tiny.Rendering.CameraSettings2D
+Log: 0x97490261b3c2de08 -   10901246991677971976 - Unity.Transforms.LocalToWorld
+Log: 0xa42de7cc0763e5be -   11830366659655493054 - Unity.Transforms.Translation
+Log: 0x17f9e5069c1a8fb2 -    1727663748624846770 - Unity.Tiny.Rendering.Camera
+Log: 0xa466b7c9c19e31f1 -   11846357947009348081 - Unity.Entities.SceneSection
+Log: 0xa6a8a3b8ff79782e -   12009028421338888238 - Unity.Tiny.Rendering.Fog
+Log: 0x0125f031ccc23ba5 -      82736264855567269 - Unity.Tiny.Rendering.CameraAutoAspectFromNode
+Log: 0xc73e8a829c87fcf6 -   14357064955680259318 - Unity.Scenes.SceneBoundingVolume
+Log: 0x3d4f995ca50d324b -    4417918382658892363 - Unity.Tiny.Audio.AudioListener
+Log: 0xb1ac034499f49e3e -   12802611433883082302 - Unity.Transforms.Rotation

@@ -1,0 +1,7 @@
+Log: ::Exported Types (by stable hash)::
+Log: 0xe2c527a0cbbb88ae -   16340510394550028462 - Unity.Tiny.Rendering.BuiltInShader
+Log: 0x65c072712c690e66 -    7331986023761120870 - Unity.Tiny.Rendering.ShaderBinData
+Log: 0xc2a3343191fd25e8 -   14025111052069185000 - Unity.Entities.Runtime.CoreConfig
+Log: 0x698ab92dfc17accd -    7605094527922580685 - Unity.Tiny.DisplayInfo
+Log: 0x59f523a663ccd8d2 -    6482126436215609554 - Unity.Tiny.Rendering.RenderGraphConfig
+Log: 0x31f123700e8ea59e -    3598696541433275806 - Unity.Entities.Runtime.ConfigurationTag

@@ -1,0 +1,47 @@
+[404/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Data/SubScenes/46b433b264c69cbd39f04ad2e5d12be8.0.entities
+[405/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Data/SubScenes/46b433b264c69cbd39f04ad2e5d12be8.conversionlog
+[406/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Data/SubScenes/46b433b264c69cbd39f04ad2e5d12be8.entityheader
+[407/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Data/catalog.bin
+[508/668    1s] Csc artifacts/Timespawn.TinyRogue.dll/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.dll (+2 others)
+[509/668    1s] ILPostProcessorRunner artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/post_ilprocessing/Timespawn.TinyRogue.dll (+pdb)
+[510/668    1s] TypeRegGen artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/post_typereg/Timespawn.TinyRogue.dll (+80 others)
+[BUSY       6s] Burst artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm_bursted/Timespawn.TinyRogue.dll (+80 others)
+[511/668   13s] Burst artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm_bursted/Timespawn.TinyRogue.dll (+80 others)
+Compiled 1 library, containing 238 methods, in 12854ms using 10 threads: C:\Workspace\tiny-rogue\Library\DotsRuntimeBuild\artifacts\Timespawn.TinyRogue\timespawn.tinyrogue-wasm_bursted\bclobj\lib_burst_generated_part_3.wasm,C:\Workspace\tiny-rogue\Library\DotsRuntimeBuild\artifacts\Timespawn.TinyRogue\timespawn.tinyrogue-wasm_bursted\bclobj\lib_burst_generated_part_2.wasm,C:\Workspace\tiny-rogue\Library\DotsRuntimeBuild\artifacts\Timespawn.TinyRogue\timespawn.tinyrogue-wasm_bursted\bclobj\lib_burst_generated_part_0.wasm,C:\Workspace\tiny-rogue\Library\DotsRuntimeBuild\artifacts\Timespawn.TinyRogue\timespawn.tinyrogue-wasm_bursted\bclobj\lib_burst_generated_part_1.wasm,C:\Workspace\tiny-rogue\Library\DotsRuntimeBuild\artifacts\Timespawn.TinyRogue\timespawn.tinyrogue-wasm_bursted\bclobj\lib_burst_generated_part_3_merged.wasm
+[           0s] Destroying Roslyn Shared Compiler Server
+*** Bee requires additional run (17.40 seconds), 8 items updated, 668 evaluated
+*** buildprogram build success (0.07 seconds), 0 items updated, 13 evaluated
+C:/Workspace/tiny-rogue/Library/PackageCache/com.unity.platforms.web@0.9.0-preview.9/Editor/Unity.Build.Web.DotsRuntime/bee~/DotsWebTarget.cs(94): warning: Warning: Managed Debugging is disabled on WASM and ASM-JS builds.
+C:/Workspace/tiny-rogue/Library/PackageCache/com.unity.platforms.web@0.9.0-preview.9/Editor/Unity.Build.Web.DotsRuntime/bee~/DotsWebTarget.cs(94): warning: Warning: Managed Debugging is disabled on WASM and ASM-JS builds.
+[       3s] Executed build program. Created build graph with 797 nodes.
+[           0s] Freezing tundra_timespawn.tinyrogue-wasm_hq8.dag.json into .dag (Timestamp of .json > .dag)
+[ 65/668    0s] WriteResponseFile artifacts/rsp/3945987086870627416.rsp
+[512/668    3s] UnityLinker artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm_stripped/Timespawn.TinyRogue.dll (+80 others)
+[513/668    4s] Il2Cpp artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm_stripped/il2cpp-src
+[558/668    3s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Generics7.o
+[562/668    3s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Generics8.o
+[563/668    4s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods7.o
+[564/668    1s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Il2CppGenericComDefinitions7.o
+[570/668    4s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Generics9.o
+[571/668    5s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Il2CppGenericComDefinitions3.o
+[574/668    5s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods6.o
+[576/668    1s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Il2CppGenericComDefinitions8.o
+[577/668    1s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/StringLiterals.o
+[652/668    1s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/StaticInitialization.o
+[653/668    6s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods4.o
+[654/668    7s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods5.o
+[655/668    7s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Generics3.o
+[656/668    7s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods8.o
+[657/668    2s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Il2CppGenericComDefinitions9.o
+[658/668    1s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/TinyTypes.o
+[659/668    3s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/Timespawn.TinyRogue.o
+[660/668    4s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/TinyMethods.o
+[661/668   10s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods10.o
+[662/668   11s] C_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/46fa/GenericMethods11.o
+[BUSY       6s] Link_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.html (+wasm,js)
+[663/668   15s] Link_WebGL_wasm artifacts/Timespawn.TinyRogue/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.html (+wasm,js)
+emcc:WARNING: --llvm-lto ignored when using llvm backend
+[664/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.wasm
+[665/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.js
+[666/668    0s] CopyTool ../../Builds/timespawn.tinyrogue-wasm/Timespawn.TinyRogue.html
+*** Bee build success (35.80 seconds), 27 items updated, 668 evaluated
