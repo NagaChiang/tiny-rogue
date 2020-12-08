@@ -28,17 +28,13 @@ namespace Timespawn.TinyRogue.Gameplay
                 Entity nextTurnEntity = FindNextTurnEntity(entities);
                 if (nextTurnEntity != Entity.Null)
                 {
-                    ushort forwardTime = EntityManager.GetComponentData<Actor>(nextTurnEntity).NextActionTime;
-
-                    EndInitializationEntityCommandBufferSystem endinitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
-                    EntityCommandBuffer commandBuffer = endinitECBSystem.CreateCommandBuffer();
-                    commandBuffer.AddComponent<TurnToken>(nextTurnEntity);
-                    endinitECBSystem.AddJobHandleForProducer(Dependency);
-
+                    ushort forwardTime = GetComponent<Actor>(nextTurnEntity).NextActionTime;
                     Entities.ForEach((ref Actor actor) =>
                     {
                         actor.NextActionTime -= forwardTime;
-                    }).ScheduleParallel();
+                    }).Run();
+
+                    EntityManager.AddComponent<TurnToken>(nextTurnEntity);
                 }
             }
 

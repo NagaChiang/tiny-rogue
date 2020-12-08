@@ -1,5 +1,6 @@
 ﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Maps;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -15,8 +16,7 @@ namespace Timespawn.TinyRogue.Gameplay
             DynamicBuffer<Cell> cellBuffer = GetBuffer<Cell>(mapEntity);
             ComponentDataFromEntity<Block> blockFromEntity = GetComponentDataFromEntity<Block>(true);
 
-            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
-            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
+            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.TempJob);
             Entities
                 .WithReadOnly(blockFromEntity)
                 .WithAll<TurnToken>()
@@ -44,7 +44,10 @@ namespace Timespawn.TinyRogue.Gameplay
                     commandBuffer.RemoveComponent<TurnToken>(entity);
                 }).Schedule();
 
-            endInitECBSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
+
+            commandBuffer.Playback(EntityManager);
+            commandBuffer.Dispose();
         }
     }
 }

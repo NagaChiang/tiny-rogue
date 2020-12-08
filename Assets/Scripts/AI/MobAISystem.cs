@@ -19,8 +19,7 @@ namespace Timespawn.TinyRogue.AI
             DynamicBuffer<Cell> cellBuffer = GetBuffer<Cell>(mapEntity);
             NativeArray<Random> randomArray = World.GetOrCreateSystem<RandomSystem>().GetRandomArray();
 
-            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
-            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
+            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.TempJob);
             Entities
                 .WithAll<TurnToken, Mob>()
                 .WithNone<ActorAction>()
@@ -44,7 +43,10 @@ namespace Timespawn.TinyRogue.AI
                     randomArray[0] = random;
                 }).Schedule();
 
-            endInitECBSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
+
+            commandBuffer.Playback(EntityManager);
+            commandBuffer.Dispose();
         }
     }
 }

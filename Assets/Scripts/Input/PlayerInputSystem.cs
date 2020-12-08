@@ -1,5 +1,6 @@
 ﻿using Timespawn.TinyRogue.Common;
 using Timespawn.TinyRogue.Gameplay;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
@@ -31,8 +32,7 @@ namespace Timespawn.TinyRogue.Input
                 return;
             }
 
-            EndInitializationEntityCommandBufferSystem endInitECBSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
-            EntityCommandBuffer commandBuffer = endInitECBSystem.CreateCommandBuffer();
+            EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.TempJob);
             Entities
                 .WithAll<Player, TurnToken>()
                 .WithNone<ActorAction>()
@@ -41,7 +41,10 @@ namespace Timespawn.TinyRogue.Input
                     commandBuffer.AddComponent(entity, new ActorAction(direction));
                 }).Schedule();
 
-            endInitECBSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
+
+            commandBuffer.Playback(EntityManager);
+            commandBuffer.Dispose();
         }
 
         private bool TryGetKeyboardInput(out Direction direction)
