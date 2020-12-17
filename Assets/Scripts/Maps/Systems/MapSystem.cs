@@ -105,7 +105,7 @@ namespace Timespawn.TinyRogue.Maps
 
                         NativeArray<Cell> cells = cellBuffer.ToNativeArray(Allocator.Temp);
 
-                        int2 playerCoord = grid.GetRandomWalkableCoord(blockFromEntity, cellBuffer, ref random);
+                        int2 playerCoord = grid.GetRandomWalkableCoord(blockFromEntity, cells, ref random);
                         Entity playerUnit = grid.Instantiate(commandBuffer, assetLoader.Player, translation.Value, playerCoord);
                         AddHealthBar(commandBuffer, playerUnit, assetLoader.HealthBar);
                         SetCellUnit(ref cells, grid, playerCoord, playerUnit);
@@ -113,7 +113,7 @@ namespace Timespawn.TinyRogue.Maps
                         const int mobCount = 10;
                         for (int i = 0; i < mobCount; i++)
                         {
-                            int2 mobCoord = grid.GetRandomWalkableCoord(blockFromEntity, cellBuffer, ref random);
+                            int2 mobCoord = grid.GetRandomWalkableCoord(blockFromEntity, cells, ref random);
                             Entity mobUnit = grid.Instantiate(commandBuffer, assetLoader.Mob, translation.Value, mobCoord);
                             AddHealthBar(commandBuffer, mobUnit, assetLoader.HealthBar);
                             SetCellUnit(ref cells, grid, mobCoord, mobUnit);

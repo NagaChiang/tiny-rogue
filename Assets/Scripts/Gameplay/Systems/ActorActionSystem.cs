@@ -25,13 +25,13 @@ namespace Timespawn.TinyRogue.Gameplay
                     commandBuffer.RemoveComponent<ActorAction>(entity);
 
                     int2 targetCoord = tile.GetCoord() + CommonUtils.DirectionToInt2(action.Direction);
-                    Entity target = grid.GetUnit(cellBuffer, targetCoord);
+                    Entity target = grid.GetUnit(cellBuffer.AsNativeArray(), targetCoord);
                     if (target != Entity.Null)
                     {
                         // Attack
                         commandBuffer.AddComponent(entity, new AttackCommand(target));
                     }
-                    else if (grid.IsWalkable(blockFromEntity, cellBuffer, targetCoord))
+                    else if (grid.IsWalkable(blockFromEntity, cellBuffer.AsNativeArray(), targetCoord))
                     {
                         // Move
                         commandBuffer.AddComponent(entity, new GridMoveCommand(targetCoord));

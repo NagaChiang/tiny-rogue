@@ -81,22 +81,22 @@ namespace Timespawn.TinyRogue.Maps
             return entity;
         }
 
-        public Entity GetUnit(in DynamicBuffer<Cell> cellBuffer, in int2 coord)
+        public Entity GetUnit(in NativeArray<Cell> cells, in int2 coord)
         {
-            return GetUnit(cellBuffer, coord.x, coord.y);
+            return GetUnit(cells, coord.x, coord.y);
         }
 
-        public Entity GetUnit(in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public Entity GetUnit(in NativeArray<Cell> cells, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
                 return Entity.Null;
             }
 
-            return cellBuffer[GetIndex(x, y)].Unit;
+            return cells[GetIndex(x, y)].Unit;
         }
 
-        public void SetUnit(in DynamicBuffer<Cell> cellBuffer, in int2 coord, in Entity unit)
+        public void SetUnit(DynamicBuffer<Cell> cellBuffer, in int2 coord, in Entity unit)
         {
             SetUnit(cellBuffer, coord.x, coord.y, unit);
         }
@@ -112,29 +112,29 @@ namespace Timespawn.TinyRogue.Maps
             cellBuffer[GetIndex(x, y)] = new Cell(cell.Terrain, unit);
         }
 
-        public bool HasUnit(in DynamicBuffer<Cell> cellBuffer, int2 coord)
+        public bool HasUnit(in NativeArray<Cell> cells, int2 coord)
         {
-            return GetUnit(cellBuffer, coord.x, coord.y) != Entity.Null;
+            return GetUnit(cells, coord.x, coord.y) != Entity.Null;
         }
 
-        public bool HasUnit(in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public bool HasUnit(in NativeArray<Cell> cells, int x, int y)
         {
-            return GetUnit(cellBuffer, x, y) != Entity.Null;
+            return GetUnit(cells, x, y) != Entity.Null;
         }
 
-        public Entity GetTerrain(in DynamicBuffer<Cell> cellBuffer, in int2 coord)
+        public Entity GetTerrain(in NativeArray<Cell> cells, in int2 coord)
         {
-            return GetTerrain(cellBuffer, coord.x, coord.y);
+            return GetTerrain(cells, coord.x, coord.y);
         }
 
-        public Entity GetTerrain(in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public Entity GetTerrain(in NativeArray<Cell> cells, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
                 return Entity.Null;
             }
 
-            return cellBuffer[GetIndex(x, y)].Terrain;
+            return cells[GetIndex(x, y)].Terrain;
         }
 
         public int GetIndex(int2 coord)
@@ -199,19 +199,19 @@ namespace Timespawn.TinyRogue.Maps
             return x >= 0 && x < Width && y >= 0 && y < Height;
         }
 
-        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int2 coord)
+        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in NativeArray<Cell> cells, in int2 coord)
         {
-            return IsWalkable(blockFromEntity, cellBuffer, coord.x, coord.y);
+            return IsWalkable(blockFromEntity, cells, coord.x, coord.y);
         }
 
-        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, int x, int y)
+        public bool IsWalkable(in ComponentDataFromEntity<Block> blockFromEntity, in NativeArray<Cell> cells, int x, int y)
         {
             if (!IsValidCoord(x, y))
             {
                 return false;
             }
 
-            Entity terrain = GetTerrain(cellBuffer, x, y);
+            Entity terrain = GetTerrain(cells, x, y);
             if (terrain == Entity.Null)
             {
                 return false;
@@ -220,7 +220,7 @@ namespace Timespawn.TinyRogue.Maps
             return !blockFromEntity.HasComponent(terrain);
         }
 
-        public int2 GetRandomWalkableCoord(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, ref Random random)
+        public int2 GetRandomWalkableCoord(in ComponentDataFromEntity<Block> blockFromEntity, in NativeArray<Cell> cellBuffer, ref Random random)
         {
             NativeList<int2> coords = new NativeList<int2>(Allocator.Temp);
             for (int y = 0; y < Height; y++)
@@ -247,17 +247,17 @@ namespace Timespawn.TinyRogue.Maps
             return coord;
         }
 
-        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int2 coord, in Allocator allocator)
+        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in NativeArray<Cell> cells, in int2 coord, in Allocator allocator)
         {
-            return GetWalkableDirections(blockFromEntity, cellBuffer, coord.x, coord.y, allocator);
+            return GetWalkableDirections(blockFromEntity, cells, coord.x, coord.y, allocator);
         }
 
-        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in DynamicBuffer<Cell> cellBuffer, in int x, in int y, in Allocator allocator)
+        public NativeArray<Direction> GetWalkableDirections(in ComponentDataFromEntity<Block> blockFromEntity, in NativeArray<Cell> cells, in int x, in int y, in Allocator allocator)
         {
             NativeList<Direction> directionList = new NativeList<Direction>(allocator);
             for (int i = (int) Direction.Up; i <= (int) Direction.Right; i++)
             {
-                if (IsWalkable(blockFromEntity, cellBuffer, x, y))
+                if (IsWalkable(blockFromEntity, cells, x, y))
                 {
                     directionList.Add((Direction) i);
                 }

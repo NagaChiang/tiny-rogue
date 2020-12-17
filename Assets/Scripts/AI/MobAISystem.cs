@@ -28,7 +28,7 @@ namespace Timespawn.TinyRogue.AI
                     Random random = randomArray[0];
                     ComponentDataFromEntity<Block> blockFromEntity = GetComponentDataFromEntity<Block>(true);
 
-                    NativeArray<Direction> walkableDirections = grid.GetWalkableDirections(blockFromEntity, cellBuffer, tile.x, tile.y, Allocator.Temp);
+                    NativeArray<Direction> walkableDirections = grid.GetWalkableDirections(blockFromEntity, cellBuffer.AsNativeArray(), tile.x, tile.y, Allocator.Temp);
                     if (walkableDirections.Length > 0)
                     {
                         Direction direction = walkableDirections[random.NextInt(walkableDirections.Length)];
