@@ -6,6 +6,7 @@ namespace Timespawn.TinyRogue.Maps
 {
     public enum CellType
     {
+        None,
         Ground,
         Wall,
     }
@@ -23,22 +24,30 @@ namespace Timespawn.TinyRogue.Maps
 
     public struct MapGenerator : System.IDisposable
     {
-        public MapGenerateSetting Setting;
+        private MapGenerateSetting Setting;
+        private Grid Grid;
+        public NativeArray<CellType> CellData;
 
-        private NativeArray<CellType> CellData;
-
-        public MapGenerator(MapGenerateSetting setting)
+        public MapGenerator(in MapGenerateSetting setting, in Grid grid, ref Random random)
         {
             Setting = setting;
+            Grid = grid;
 
             CellData = new NativeArray<CellType>(Setting.Width * Setting.Height, Allocator.Temp);
             for (int i = 0; i < CellData.Length; i++)
             {
                 CellData[i] = CellType.Wall;
             }
+
+            GenerateCellData(ref random);
         }
 
-        public NativeArray<CellType> Generate(ref Random random)
+        public void Dispose()
+        {
+            CellData.Dispose();
+        }
+
+        private void GenerateCellData(ref Random random)
         {
             // Rooms
             Rect fullRect = new Rect(int2.zero, Setting.Width, Setting.Height);
@@ -78,17 +87,12 @@ namespace Timespawn.TinyRogue.Maps
                 nodeIndexStack.Add(node.RightNodeIndex);
             }
 
+            CarveOuterSpace();
+
             nodes.Dispose();
             leafIndices.Dispose();
             rooms.Dispose();
             nodeIndexStack.Dispose();
-
-            return CellData;
-        }
-
-        public void Dispose()
-        {
-            CellData.Dispose();
         }
 
         private Rect GenerateRoom(in Rect rect, ref Random random)
@@ -103,15 +107,15 @@ namespace Timespawn.TinyRogue.Maps
             int2 lowerLeft = rect.LowerLeft + random.NextInt2(int2.zero, new int2(rect.Width - width, rect.Height - height));
             Rect room = new Rect(lowerLeft, width, height);
 
-            SetCellType(room, CellType.Ground, true);
+            SetCellType(room, CellType.Ground, Rect.OperationMode.BoundaryExcluded);
 
             return room;
         }
 
         private void GeneratePath(in Rect room1, in Rect room2, ref Random random)
         {
-            int2 pos1 = room1.GetRandomPosition(ref random, true);
-            int2 pos2 = room2.GetRandomPosition(ref random, true);
+            int2 pos1 = room1.GetRandomPosition(ref random, Rect.OperationMode.BoundaryExcluded);
+            int2 pos2 = room2.GetRandomPosition(ref random, Rect.OperationMode.BoundaryExcluded);
             int2 offset = pos2 - pos1;
             int horizontalLength = math.abs(offset.x) + 1;
             int verticalLength = math.abs(offset.y) + 1;
@@ -191,18 +195,51 @@ namespace Timespawn.TinyRogue.Maps
             }
         }
 
-        private void SetCellType(in Rect rect, CellType cellType, bool isBoundaryExcluded = false)
+        private void CarveOuterSpace()
+        {
+            for (int y = 0; y < Grid.Height; y++)
+            {
+                for (int x = 0; x < Grid.Width; x++)
+                {
+                    bool isInner = false;
+                    for (int v = -1; v <= 1; v++)
+                    {
+                        for (int u = -1; u <= 1; u++)
+                        {
+                            int2 coord = new int2(x + u, y + v);
+                            if (!Grid.IsValidCoord(coord))
+                            {
+                                continue;
+                            }
+
+                            if (CellData[Grid.GetIndex(coord)] == CellType.Ground)
+                            {
+                                isInner = true;
+                                break;
+                            }
+                        }
+
+                        if (isInner)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!isInner)
+                    {
+                        CellData[Grid.GetIndex(x, y)] = CellType.None;
+                    }
+                }
+            }
+        }
+
+        private void SetCellType(in Rect rect, CellType cellType, Rect.OperationMode mode = Rect.OperationMode.BoundaryIncluded)
         {
             for (int y = 0; y < rect.Height; y++)
             {
-                if (isBoundaryExcluded && (y == 0 || y == rect.Height - 1))
-                {
-                    continue;
-                }
-
                 for (int x = 0; x < rect.Width; x++)
                 {
-                    if (isBoundaryExcluded && (x == 0 || x == rect.Width - 1))
+                    if (!rect.ShouldOperate(x, y, mode))
                     {
                         continue;
                     }

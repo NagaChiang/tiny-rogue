@@ -5,6 +5,13 @@ namespace Timespawn.TinyRogue.Maps
 {
     public struct Rect
     {
+        public enum OperationMode
+        {
+            BoundaryIncluded,
+            BoundaryExcluded,
+            BoundaryOnly,
+        }
+
         public int2 LowerLeft;
         public int Width;
         public int Height;
@@ -23,19 +30,14 @@ namespace Timespawn.TinyRogue.Maps
             Height = height;
         }
 
-        public NativeArray<int2> GetPositions(Allocator allocator, bool isBoundaryExcluded = false)
+        public NativeArray<int2> GetPositions(Allocator allocator, OperationMode mode = OperationMode.BoundaryIncluded)
         {
             NativeList<int2> posList = new NativeList<int2>(Allocator.Temp);
             for (int y = 0; y < Height; y++)
             {
-                if (isBoundaryExcluded && (y == 0 || y == Height - 1))
-                {
-                    continue;
-                }
-
                 for (int x = 0; x < Width; x++)
                 {
-                    if (isBoundaryExcluded && (x == 0 || x == Width - 1))
+                    if (!ShouldOperate(x, y, mode))
                     {
                         continue;
                     }
@@ -50,14 +52,39 @@ namespace Timespawn.TinyRogue.Maps
             return positions;
         }
 
-        public int2 GetRandomPosition(ref Random random, bool isBoundaryExcluded = false)
+        public int2 GetRandomPosition(ref Random random, OperationMode mode = OperationMode.BoundaryIncluded)
         {
-            NativeArray<int2> positions = GetPositions(Allocator.Temp, isBoundaryExcluded);
+            NativeArray<int2> positions = GetPositions(Allocator.Temp, mode);
             int2 randomPos = positions[random.NextInt(positions.Length)];
 
             positions.Dispose();
 
             return randomPos;
+        }
+
+        public bool IsOnBoundary(int x, int y)
+        {
+            return x == 0 || x == Width - 1 || y == 0 || y == Height - 1;
+        }
+
+        public bool ShouldOperate(int x, int y, OperationMode mode)
+        {
+            if (IsOnBoundary(x, y))
+            {
+                if (mode == Rect.OperationMode.BoundaryExcluded)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (mode == Rect.OperationMode.BoundaryOnly)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public bool IsValid()
