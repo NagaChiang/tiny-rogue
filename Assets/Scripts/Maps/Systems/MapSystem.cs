@@ -63,23 +63,13 @@ namespace Timespawn.TinyRogue.Maps
                 Grid grid = new Grid(command.MapSetting.Width, command.MapSetting.Height);
                 commandBuffer.AddComponent(entity, grid);
 
-                MapGenerator generator = new MapGenerator(command.MapSetting, grid, ref random);
+                MapGenerator generator = new MapGenerator(command.MapSetting, grid, assetLoader, ref random);
                 DynamicBuffer<Cell> cellBuffer = commandBuffer.AddBuffer<Cell>(entity);
                 for (int y = 0; y < command.MapSetting.Height; y++)
                 {
                     for (int x = 0; x < command.MapSetting.Width; x++)
                     {
-                        Entity prefab = Entity.Null;
-                        switch (generator.CellData[grid.GetIndex(x, y)])
-                        {
-                            case CellType.Ground:
-                                prefab = assetLoader.Ground;
-                                break;
-                            case CellType.Wall:
-                                prefab = assetLoader.Wall;
-                                break;
-                        }
-
+                        Entity prefab = generator.GetPrefab(x, y);
                         Entity terrainEntity = Entity.Null;
                         if (prefab != Entity.Null)
                         {

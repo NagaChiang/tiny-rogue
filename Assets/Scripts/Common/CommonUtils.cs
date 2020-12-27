@@ -20,5 +20,13 @@ namespace Timespawn.TinyRogue.Common
 
             return int2.zero;
         }
+
+        public static bool HasFlags(GridMask source, GridMask flags)
+        {
+            int sourceInt = (int) source;
+            int flagsInt = (int) flags;
+
+            return (sourceInt & flagsInt) == flagsInt;
+        }
     }
 }

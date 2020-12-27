@@ -1,5 +1,9 @@
-﻿using Unity.Collections;
+﻿using Timespawn.TinyRogue.Assets;
+using Timespawn.TinyRogue.Common;
+using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Tiny;
 using Random = Unity.Mathematics.Random;
 
 namespace Timespawn.TinyRogue.Maps
@@ -7,7 +11,7 @@ namespace Timespawn.TinyRogue.Maps
     public enum CellType
     {
         None,
-        Ground,
+        Floor,
         Wall,
     }
 
@@ -24,27 +28,171 @@ namespace Timespawn.TinyRogue.Maps
 
     public struct MapGenerator : System.IDisposable
     {
+        private struct CoordMaskPair
+        {
+            public int2 Coord;
+            public GridMask Mask;
+
+            public CoordMaskPair(int2 coord, GridMask mask)
+            {
+                Coord = coord;
+                Mask = mask;
+            }
+        }
+
         private MapGenerateSetting Setting;
         private Grid Grid;
-        public NativeArray<CellType> CellData;
+        private AssetLoader AssetLoader;
+        private NativeArray<CellType> CellData;
+        private NativeArray<GridMask> WallMasks;
 
-        public MapGenerator(in MapGenerateSetting setting, in Grid grid, ref Random random)
+        public MapGenerator(in MapGenerateSetting setting, in Grid grid, in AssetLoader assetLoader, ref Random random)
         {
             Setting = setting;
             Grid = grid;
+            AssetLoader = assetLoader;
+            CellData = new NativeArray<CellType>(Grid.Width * Grid.Height, Allocator.Temp);
+            WallMasks = new NativeArray<GridMask>(Grid.Width * Grid.Height, Allocator.Temp);
 
-            CellData = new NativeArray<CellType>(Setting.Width * Setting.Height, Allocator.Temp);
             for (int i = 0; i < CellData.Length; i++)
             {
                 CellData[i] = CellType.Wall;
             }
 
             GenerateCellData(ref random);
+            GenerateWallMasks();
+        }
+
+        public Entity GetPrefab(int x, int y)
+        {
+            if (!Grid.IsValidCoord(x, y) || CellData[Grid.GetIndex(x, y)] == CellType.None)
+            { 
+                return Entity.Null;
+            }
+
+            GridMask wallMask = WallMasks[Grid.GetIndex(x, y)];
+            bool isWall = (wallMask & GridMask.Center) != 0;
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.East | GridMask.West | GridMask.South))
+            {
+                return isWall ? AssetLoader.NEWSWall : AssetLoader.NEWSFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.East | GridMask.West | GridMask.South))
+                //&& (wallMask & (GridMask.SouthEast | GridMask.SouthWest)) == 0)
+            {
+                return isWall ? AssetLoader.EWSWall : AssetLoader.EWSFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.East | GridMask.South))
+                //&& (wallMask & (GridMask.SouthEast | GridMask.NorthEast)) == 0)
+            {
+                return isWall ? AssetLoader.NESWall : AssetLoader.NESFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.West | GridMask.South))
+                //&& (wallMask & (GridMask.NorthWest | GridMask.SouthWest)) == 0)
+            {
+                return isWall ? AssetLoader.NWSWall : AssetLoader.NWSFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.East | GridMask.West))
+                //&& (wallMask & (GridMask.NorthWest | GridMask.NorthEast)) == 0)
+            {
+                return isWall ? AssetLoader.NEWWall : AssetLoader.NEWFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.West | GridMask.East))
+            {
+                return isWall ? AssetLoader.EWWall : AssetLoader.EWFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.South))
+            {
+                return isWall ? AssetLoader.NSWall : AssetLoader.NSFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.West))
+            {
+                return isWall ? AssetLoader.NWWall : AssetLoader.NWFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North | GridMask.East))
+            {
+                return isWall ? AssetLoader.NEWall : AssetLoader.NEFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.South | GridMask.West))
+            {
+                return isWall ? AssetLoader.SWWall : AssetLoader.SWFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.South | GridMask.East))
+            {
+                return isWall ? AssetLoader.SEWall : AssetLoader.SEFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.North))
+            {
+                return isWall ? AssetLoader.NWall : AssetLoader.NFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.East))
+            {
+                return isWall ? AssetLoader.EWall : AssetLoader.EFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.West))
+            {
+                return isWall ? AssetLoader.WWall : AssetLoader.WFloor;
+            }
+
+            if (CommonUtils.HasFlags(wallMask, GridMask.South))
+            {
+                return isWall ? AssetLoader.SWall : AssetLoader.SFloor;
+            }
+
+            return AssetLoader.Floor;
         }
 
         public void Dispose()
         {
             CellData.Dispose();
+            WallMasks.Dispose();
+        }
+
+        private void GenerateWallMasks()
+        {
+            NativeList<CoordMaskPair> relativeCoordToMasks = new NativeList<CoordMaskPair>(Allocator.Temp);
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(0, 1), GridMask.North));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(-1, 0), GridMask.West));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(0, 0), GridMask.Center));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(1, 0), GridMask.East));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(0, -1), GridMask.South));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(-1, 1), GridMask.NorthWest));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(1, 1), GridMask.NorthEast));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(-1, -1), GridMask.SouthWest));
+            relativeCoordToMasks.Add(new CoordMaskPair(new int2(1, -1), GridMask.SouthEast));
+
+            for (int y = 0; y < Grid.Height; y++)
+            {
+                for (int x = 0; x < Grid.Width; x++)
+                {
+                    GridMask wallMask = 0;
+                    for (int i = 0; i < relativeCoordToMasks.Length; i++)
+                    {
+                        int2 coord = new int2(x, y) + relativeCoordToMasks[i].Coord;
+                        GridMask mask = relativeCoordToMasks[i].Mask;
+                        if (Grid.IsValidCoord(coord) && CellData[Grid.GetIndex(coord)] == CellType.Wall)
+                        {
+                            wallMask |= mask;
+                        }
+                    }
+
+                    WallMasks[Grid.GetIndex(x, y)] = wallMask;
+                }
+            }
+
+            relativeCoordToMasks.Dispose();
         }
 
         private void GenerateCellData(ref Random random)
@@ -107,7 +255,7 @@ namespace Timespawn.TinyRogue.Maps
             int2 lowerLeft = rect.LowerLeft + random.NextInt2(int2.zero, new int2(rect.Width - width, rect.Height - height));
             Rect room = new Rect(lowerLeft, width, height);
 
-            SetCellType(room, CellType.Ground, Rect.OperationMode.BoundaryExcluded);
+            SetCellType(room, CellType.Floor, Rect.OperationMode.BoundaryExcluded);
 
             return room;
         }
@@ -127,33 +275,33 @@ namespace Timespawn.TinyRogue.Maps
                 if (offset.x >= 0)
                 {
                     // Right
-                    SetCellType(new Rect(pos1, horizontalLength, 1), CellType.Ground);
+                    SetCellType(new Rect(pos1, horizontalLength, 1), CellType.Floor);
 
                     if (offset.y >= 0)
                     {
                         // Up
-                        SetCellType(new Rect(pos2.x, pos1.y, 1, verticalLength), CellType.Ground);
+                        SetCellType(new Rect(pos2.x, pos1.y, 1, verticalLength), CellType.Floor);
                     }
                     else
                     {
                         // Down
-                        SetCellType(new Rect(pos2.x, pos2.y, 1, verticalLength), CellType.Ground);
+                        SetCellType(new Rect(pos2.x, pos2.y, 1, verticalLength), CellType.Floor);
                     }
                 }
                 else
                 {
                     // Left
-                    SetCellType(new Rect(pos2.x, pos1.y, horizontalLength, 1), CellType.Ground);
+                    SetCellType(new Rect(pos2.x, pos1.y, horizontalLength, 1), CellType.Floor);
 
                     if (offset.y >= 0)
                     {
                         // Up
-                        SetCellType(new Rect(pos2.x, pos1.y, 1, verticalLength), CellType.Ground);
+                        SetCellType(new Rect(pos2.x, pos1.y, 1, verticalLength), CellType.Floor);
                     }
                     else
                     {
                         // Down
-                        SetCellType(new Rect(pos2.x, pos2.y, 1, verticalLength), CellType.Ground);
+                        SetCellType(new Rect(pos2.x, pos2.y, 1, verticalLength), CellType.Floor);
                     }
                 }
             }
@@ -163,33 +311,33 @@ namespace Timespawn.TinyRogue.Maps
                 if (offset.y >= 0)
                 {
                     // Up
-                    SetCellType(new Rect(pos1, 1, verticalLength), CellType.Ground);
+                    SetCellType(new Rect(pos1, 1, verticalLength), CellType.Floor);
 
                     if (offset.x >= 0)
                     {
                         // Right
-                        SetCellType(new Rect(pos1.x, pos2.y, horizontalLength, 1), CellType.Ground);
+                        SetCellType(new Rect(pos1.x, pos2.y, horizontalLength, 1), CellType.Floor);
                     }
                     else
                     {
                         // Left
-                        SetCellType(new Rect(pos2, horizontalLength, 1), CellType.Ground);
+                        SetCellType(new Rect(pos2, horizontalLength, 1), CellType.Floor);
                     }
                 }
                 else
                 {
                     // Down
-                    SetCellType(new Rect(pos1.x, pos2.y, 1, verticalLength), CellType.Ground);
+                    SetCellType(new Rect(pos1.x, pos2.y, 1, verticalLength), CellType.Floor);
 
                     if (offset.x >= 0)
                     {
                         // Right
-                        SetCellType(new Rect(pos1.x, pos2.y, horizontalLength, 1), CellType.Ground);
+                        SetCellType(new Rect(pos1.x, pos2.y, horizontalLength, 1), CellType.Floor);
                     }
                     else
                     {
                         // Left
-                        SetCellType(new Rect(pos2, horizontalLength, 1), CellType.Ground);
+                        SetCellType(new Rect(pos2, horizontalLength, 1), CellType.Floor);
                     }
                 }
             }
@@ -212,7 +360,7 @@ namespace Timespawn.TinyRogue.Maps
                                 continue;
                             }
 
-                            if (CellData[Grid.GetIndex(coord)] == CellType.Ground)
+                            if (CellData[Grid.GetIndex(coord)] == CellType.Floor)
                             {
                                 isInner = true;
                                 break;

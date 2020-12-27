@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6159733598564428296}
   - component: {fileID: 6159733598564428299}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: -44196421
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4335091869886428640, guid: 615f24b7204354b47bb54a74b27576f0,
+  m_Sprite: {fileID: -8277934950007728908, guid: 615f24b7204354b47bb54a74b27576f0,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

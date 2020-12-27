@@ -152,11 +152,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae526960766ad1d4c9df213065a7bb59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ground: {fileID: 6159733598564428533, guid: 7d58c68fe7e01114cbf25d6338471224, type: 3}
+  Floor: {fileID: 6159733598564428533, guid: 7d58c68fe7e01114cbf25d6338471224, type: 3}
   Wall: {fileID: 613087840036912193, guid: e254e2f437567e24e8d69fc06a16e060, type: 3}
   Player: {fileID: 8437459810289152016, guid: 3797308ee694b054b9bbb7dbcbe55f06, type: 3}
   Mob: {fileID: 65968882738304204, guid: 2e6a0a3f6f94d4e4a996474c3e88d8f0, type: 3}
   HealthBar: {fileID: 1809183956028385187, guid: 13097489539a3af42af36263a0b97067,
+    type: 3}
+  NFloor: {fileID: 3956865732649305164, guid: d34fad3a37d2c444daa179c38bb1769a, type: 3}
+  EFloor: {fileID: 3956865732649305164, guid: 6fc8dd2fd51fc9d47b43bfdfbdc8e1f7, type: 3}
+  WFloor: {fileID: 3956865732649305164, guid: 2b4f99ea768820d49aa3afafe3f54a2a, type: 3}
+  SFloor: {fileID: 3956865732649305164, guid: cb10758eb3114524996259815a9129d2, type: 3}
+  EWFloor: {fileID: 3956865732649305164, guid: 9fdf36b785c503345834f2fa184a08db, type: 3}
+  NSFloor: {fileID: 3956865732649305164, guid: 974428b036f09ab47b498cc96242fe3b, type: 3}
+  SWFloor: {fileID: 3956865732649305164, guid: be411094f5cdb104799ca900d0064e81, type: 3}
+  SEFloor: {fileID: 3956865732649305164, guid: c13eb409df29a8349a4b3f77d1dd2f40, type: 3}
+  NWFloor: {fileID: 3956865732649305164, guid: 40b5a42042976734490bfd5457c8d40c, type: 3}
+  NEFloor: {fileID: 3956865732649305164, guid: 7794d28e80d161749aaf6dccd6a24f08, type: 3}
+  EWSFloor: {fileID: 3956865732649305164, guid: a022f9a7df895c24496ab033ed144098,
+    type: 3}
+  NESFloor: {fileID: 3956865732649305164, guid: 7378231408d6b4244a75ed56f2d52050,
+    type: 3}
+  NWSFloor: {fileID: 3956865732649305164, guid: f73a63c5241487847a03c5b0357cc57b,
+    type: 3}
+  NEWFloor: {fileID: 3956865732649305164, guid: f999aee070dc09b4f96540a9d621eb3c,
+    type: 3}
+  NEWSFloor: {fileID: 3956865732649305164, guid: 0d0a23bc19b3f3e4a85511dd34d03c41,
+    type: 3}
+  NWall: {fileID: 4417599532531902918, guid: 5fa85c87260a09b4ebea6d14ba7ee8b5, type: 3}
+  EWall: {fileID: 4417599532531902918, guid: 7b7f737565576de4491c784770475206, type: 3}
+  WWall: {fileID: 4417599532531902918, guid: e7d5d1508d38c914babe1c91563c1d65, type: 3}
+  SWall: {fileID: 4417599532531902918, guid: baaaaabbb86ce5d4fb20bd100bda1a28, type: 3}
+  EWWall: {fileID: 4417599532531902918, guid: 1ee8b5e3f82b6f54194293f20f74a223, type: 3}
+  NSWall: {fileID: 4417599532531902918, guid: 8a5d422384ad2a24897d0564e260ae29, type: 3}
+  SWWall: {fileID: 4417599532531902918, guid: d56dab7a8ab801d448bb82b3b773167d, type: 3}
+  SEWall: {fileID: 4417599532531902918, guid: 96b3c5aa1cd6e6c429d2deda18402d2c, type: 3}
+  NWWall: {fileID: 4417599532531902918, guid: 28dbb638c34d0dd459d56733eb084971, type: 3}
+  NEWall: {fileID: 4417599532531902918, guid: 254987dd30a57fd42b6c3ea1f5cb9fbb, type: 3}
+  EWSWall: {fileID: 4417599532531902918, guid: af5c0642b5dab824b96daa30c534e64b, type: 3}
+  NESWall: {fileID: 4417599532531902918, guid: 81208d4ec98578a41a167a13ffcc6c1f, type: 3}
+  NWSWall: {fileID: 4417599532531902918, guid: 1ca004b1591e76644ad08fbb8474f3ac, type: 3}
+  NEWWall: {fileID: 4417599532531902918, guid: 5ef365f1cff96fa49baad81d691284f8, type: 3}
+  NEWSWall: {fileID: 4417599532531902918, guid: 636f464a620791a4bad9d824db7acdb8,
     type: 3}
 --- !u!4 &132370067
 Transform:
