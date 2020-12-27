@@ -1,5 +1,6 @@
 Log: Exported Asset: 014b93f9a31b0c8eaa7ec5a6e8009ffe = Assets/Sprites/Floor.png
 Log: Exported Asset: 58abaa5ad81ff534469836c57e060c4c = Assets/Sprites/Tile.png
+Log: Exported Asset: 78db8962c65b23392d66e2236b5ebf33 = Assets/Sprites/Wall.png
 Log: Exported Asset: d24700548b59c569db2a4d9b3244ad3d = Assets/Sprites/Player0.png
 Log: Exported Asset: e07454a935d93771a07ed0a96dd18462 = Assets/Sprites/Avian0.png
 Log: Exported Asset: cdde49ffac420734c81feb2a2b82f91e = Assets/Sprites/Pixel.png
@@ -15,7 +16,7 @@ Log: 0xb920a3ca75f210ca -   13339842186228928714 - Timespawn.TinyRogue.Gameplay.
 Log: 0x804405bec8d2e1f3 -    9242518652242289139 - Timespawn.TinyRogue.Maps.Tile
 Log: 0x97490261b3c2de08 -   10901246991677971976 - Unity.Transforms.LocalToWorld
 Log: 0xfce27b750b7722f3 -   18222262784928195315 - Timespawn.TinyRogue.UI.HealthBar
-Log: 0xcb36aa9061b87548 -   14643078775533237576 - Timespawn.TinyRogue.Assets.AssetLoader
+Log: 0xab137f9a418fd090 -   12327336905544814736 - Timespawn.TinyRogue.Assets.AssetLoader
 Log: 0xc14641f2b5ed8aa1 -   13926891408379972257 - Timespawn.TinyRogue.Gameplay.Attack
 Log: 0x9a2c78dce225e5b0 -   11109387270898443696 - Unity.Tiny.Image2DLoadFromFileGuids
 Log: 0xa42de7cc0763e5be -   11830366659655493054 - Unity.Transforms.Translation

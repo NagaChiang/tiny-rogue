@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+</head>
+<div id="waitForManagedDebugger" style="display:none">
+   <h1 style="text-align:center;">
+     <div id="waitForManagedDebuggerMessage"></div>
+     <button onclick="doneWaitingForDebugger()">Continue</button>
+   </h1>
+</div>
+<body style="margin:0px; border:none; overflow:hidden; display:block;">
+<div id="error_log"></div>
+<canvas id="UT_CANVAS" tabindex="1" style='display:block; touch-action:none;'></canvas>
+<script>
+  var Module = {
+};
+
+
+// The action to perform when a fatal error occurs that cannot be recovered from. Override this function
+// in your own shell file to take a different action. Default behavior is to show a red error ribbon
+// at the top of the page.
+function fatal(msg) {
+	// Emscripten runtime throws a string "unwind" to unwind out from a nested Wasm callstack to yield execution back to the browser
+	if (msg.indexOf("unwind") != -1)
+		return;
+	fatal.count = (fatal.count|0)+1;
+	if (fatal.count < 20) { // Cap the number of errors that are printed to prevent an infinite cascade if there is an error each frame.
+		document.querySelector('#error_log').innerHTML += "<div style='background-color:red; border: 2px solid yellow; padding: 5px; font-weight: bold; font-size: 2em '>" + msg + '</div>';
+	}
+}
+
+// The action to perform when a runtime browser warning occurs. Override this function in your own shell file
+// to customize the behavior. Default behavior is to show a yellow warning ribbon at the top of the page
+// that disappears after a while.
+function warn(msg) {
+	warn.count = (warn.count|0)+1;
+	if (warn.count < 3) { // Cap the number of simultaneous warnings.
+		var div = document.createElement('div');
+		div.innerHTML = "<div style='background-color:yellow; border: 2px solid black; padding: 5px; font-weight: bold; font-size: 2em;'>" + msg + ' <span style="cursor: pointer">[X]</span></div>';
+		function removeWarning() { if (div.parentNode) div.parentNode.removeChild(div); }
+		document.querySelector('#error_log').appendChild(div);
+		div.querySelector('span').onclick = removeWarning;
+		setTimeout(removeWarning, 20000);
+	}
+}
+
+// By default, uncaught global errors are routed to fatal error handler. Override these in your own
+// shell file to take a different action.
+window.onerror = function(message, source, lineno, colno) {
+	var msg = source;
+	if (lineno) msg += ':' + lineno;
+	if (colno) msg += ':' + colno;
+	msg += (msg ? ':':'') + message;
+	fatal(msg);
+}
+
+function doneWaitingForDebugger() {
+  document.getElementById("waitForManagedDebugger").style.display = "none";
+}
+
+// Register a callback function that will be called when the given event occurs.
+// The input system will invoke callbacks for the input events like keydown, keyup.
+var TinyEventManager = {
+	listeners: {},
+
+	addEventListener: function(type, callback) {
+		this.listeners[type] = this.listeners[type] || [];
+		if (this.listeners[type].indexOf(callback) == -1) {
+			this.listeners[type].push(callback);
+		}
+	},
+
+	removeEventListener: function(type, callback) {
+		if (this.listeners[type]) {
+			var index = this.listeners[type].indexOf(callback);
+			if (index != -1) {
+				this.listeners[type].splice(index, 1);
+			}
+		}
+	},
+
+	dispatchEvent: function(event) {
+		if (this.listeners[event.type]) {
+			this.listeners[event.type].forEach((callback) => callback(event));
+		}
+	}
+};
+
+
+// Example action: do not navigate the browser page on space bar key presses.
+function keyEvent(ev) {
+	if (document.activeElement == document.querySelector('#UT_CANVAS') && ev.key == ' ') {
+		ev.preventDefault();
+	}
+}
+TinyEventManager.addEventListener('keydown', keyEvent);
+TinyEventManager.addEventListener('keyup', keyEvent);
+
+// Depending on the build flags that one uses, different files need to be downloaded
+// to load the compiled page. The right set of files will be expanded to be downloaded
+// via the directive below.
+
+  function binary(url) { // Downloads a binary file and outputs it in the specified callback
+      return new Promise((ok, err) => {
+        var x = new XMLHttpRequest();
+        x.open('GET', url, true);
+        x.responseType = 'arraybuffer';
+        x.onload = () => { ok(x.response); }
+        x.send(null);
+      });
+    }
+  
+  function script(url) { // Downloads a script file and adds it to DOM
+    return new Promise((ok, err) => {
+      var s = document.createElement('script');
+      s.src = url;
+      s.onload = () => {
+        ok();
+      };
+      document.body.appendChild(s);
+    });
+  }
+  Promise.all([binary('Timespawn.TinyRogue.js'), binary('Timespawn.TinyRogue.wasm')]).then((r) => {
+  Module.wasm = r[1];
+  var url = URL.createObjectURL(new Blob([r[0]], { type: 'application/javascript' }));
+  script(url).then(() => { URL.revokeObjectURL(url) });
+});
+
+
+</script>
+</body>
+</html>
+
+

@@ -1034,6 +1034,7 @@ dfa6b2b7001c5ef448e5e642b2e31ae4 = Assets/Scenes/GameScene.unity
 0xaa7352d091c78467 -   12282251664521921639 - UnityEngine.TextMesh
 0xaa812eb8cf11a08b -   12286152629726322827 - Unity.Tiny.Rendering.RenderNode
 0xab0561e4cbd7d4c6 -   12323363590669587654 - UnityEngine.Video.VideoPlayer
+0xab137f9a418fd090 -   12327336905544814736 - Timespawn.TinyRogue.Assets.AssetLoader
 0xab1c67abcbf8c764 -   12329843867392722788 - UnityEditor.MinMaxCurveEditorWindow
 0xab26144cf77fac7b -   12332566950403091579 - UnityEngine.GridLayout
 0xab5c08b73f3cd25c -   12347753861476045404 - UnityEngine.ConstantForce2D
@@ -1219,7 +1220,6 @@ dfa6b2b7001c5ef448e5e642b2e31ae4 = Assets/Scenes/GameScene.unity
 0xcb23d07c71c59792 -   14637772446787540882 - Unity.Entities.GameObjectConversionUtility+DeclaredReferenceObjectsTag
 0xcb2e0a677b42cf68 -   14640650878193946472 - UnityEditor.Rendering.UI.UIFoldoutEditor
 0xcb324e294dd9b3fc -   14641851277841642492 - UnityEditor.ReflectionProbeEditor
-0xcb36aa9061b87548 -   14643078775533237576 - Timespawn.TinyRogue.Assets.AssetLoader
 0xcb5ef27a813deab6 -   14654416845478423222 - UnityEditor.AnimEditor
 0xcb6a9e2c4fdcb1b3 -   14657701850386313651 - UnityEditor.ShaderGraph.ShaderGraphImporterEditor
 0xcb865b9a1a280167 -   14665509954000519527 - UnityEditor.Graphs.AnimationStateMachine.InvalidStateMachineBehaviour
@@ -2573,6 +2573,7 @@ dfa6b2b7001c5ef448e5e642b2e31ae4 = Assets/Scenes/GameScene.unity
 0xaa7352d091c78467 -   12282251664521921639 - UnityEngine.TextMesh
 0xaa812eb8cf11a08b -   12286152629726322827 - Unity.Tiny.Rendering.RenderNode
 0xab0561e4cbd7d4c6 -   12323363590669587654 - UnityEngine.Video.VideoPlayer
+0xab137f9a418fd090 -   12327336905544814736 - Timespawn.TinyRogue.Assets.AssetLoader
 0xab1c67abcbf8c764 -   12329843867392722788 - UnityEditor.MinMaxCurveEditorWindow
 0xab26144cf77fac7b -   12332566950403091579 - UnityEngine.GridLayout
 0xab5c08b73f3cd25c -   12347753861476045404 - UnityEngine.ConstantForce2D
@@ -2758,7 +2759,6 @@ dfa6b2b7001c5ef448e5e642b2e31ae4 = Assets/Scenes/GameScene.unity
 0xcb23d07c71c59792 -   14637772446787540882 - Unity.Entities.GameObjectConversionUtility+DeclaredReferenceObjectsTag
 0xcb2e0a677b42cf68 -   14640650878193946472 - UnityEditor.Rendering.UI.UIFoldoutEditor
 0xcb324e294dd9b3fc -   14641851277841642492 - UnityEditor.ReflectionProbeEditor
-0xcb36aa9061b87548 -   14643078775533237576 - Timespawn.TinyRogue.Assets.AssetLoader
 0xcb5ef27a813deab6 -   14654416845478423222 - UnityEditor.AnimEditor
 0xcb6a9e2c4fdcb1b3 -   14657701850386313651 - UnityEditor.ShaderGraph.ShaderGraphImporterEditor
 0xcb865b9a1a280167 -   14665509954000519527 - UnityEditor.Graphs.AnimationStateMachine.InvalidStateMachineBehaviour
